@@ -18,24 +18,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+async function saveQuote(quote, author = "Anonymous") {
+  try {
+    await addDoc(collection(db, "quotes"), {
+      quote: quote,
+      author: author,
+      timestamp: serverTimestamp()
+    });
+    console.log("Quote saved:", quote, "by", author);
+
+    // ✅ Reload quotes on the page to show it immediately
+    loadQuotes();
+  } catch (error) {
+    console.error("Error saving quote:", error);
+  }
+}
+
 // ✅ Example submit function
 document.getElementById("quote-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const quoteText = document.getElementById("quote-text").value;
-  const quoteAuthor = document.getElementById("quote-author").value;
+  const quoteText = document.getElementById("quote-text").value.trim();
+  const quoteAuthor = document.getElementById("quote-author").value.trim();
 
   try {
-    await addDoc(collection(db, "quotes"), {
-      text: quoteText,
-      author: quoteAuthor,
-      timestamp: serverTimestamp()
-    });
+    await saveQuote(quoteText, quoteAuthor);
 
     alert("Quote submitted!");
     document.getElementById("quote-form").reset();
   } catch (error) {
-    console.error("Error adding quote:", error);
     alert("Error submitting quote. Check the console.");
   }
 });
+
