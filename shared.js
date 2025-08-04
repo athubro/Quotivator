@@ -21,6 +21,17 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+function getVotedList() {
+  return JSON.parse(localStorage.getItem("votedQuotes") || "[]");
+}
+
+function addVotedId(id) {
+  const list = getVotedList();
+  if (!list.includes(id)) {
+    list.push(id);
+    localStorage.setItem("votedQuotes", JSON.stringify(list));
+  }
+}
 
 async function loadQuotes() {
   const quotesContainer = document.getElementById("shared-quotes");
@@ -69,30 +80,25 @@ async function loadQuotes() {
     });
 
     // Add upvote handlers that update Firestore
-    document.querySelectorAll(".upvote-btn").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const quoteId = btn.getAttribute("data-id");
-        const countSpan = btn.querySelector(".upvote-count");
-
-        // Disable button immediately to avoid spamming
+    document.querySelectorAll(".upvote-btn").forEach(btn => {
+      const id = btn.dataset.id;
+      if (getVotedList().includes(id)) {
         btn.disabled = true;
-
+      }
+    
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        addVotedId(id);
+        const countSpan = btn.querySelector(".upvote-count");
+    
         try {
-          const quoteRef = doc(db, "quotes", quoteId);
-
-          // Atomically increment upvotes in Firestore
-          await updateDoc(quoteRef, {
-            upvotes: increment(1),
-          });
-
-          // Update UI count
-          let count = parseInt(countSpan.textContent, 10) || 0;
-          count++;
-          countSpan.textContent = count;
-        } catch (error) {
-          console.error("Error updating upvotes:", error);
-          alert("Failed to update upvote. Try again.");
-          btn.disabled = false; // Re-enable on error
+          const ref = doc(db, "quotes", id);
+          await updateDoc(ref, { upvotes: increment(1) });
+          let c = parseInt(countSpan.textContent, 10) || 0;
+          countSpan.textContent = c + 1;
+        } catch (err) {
+          console.error("Failed to upvote:", err);
+          btn.disabled = false;
         }
       });
     });
