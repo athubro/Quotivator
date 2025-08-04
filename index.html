@@ -3,93 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quotivate</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
-
-  <!-- CSS -->
+  <title>Quote Switcher</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <nav class="navbar">
-    <div class="navbar-content">
-      <h1 class="navbar-title">Quotivate</h1>
-      <ul class="navbar-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="shared.html">Shared Quotes</a></li>
-        <li><a href="about.html">Submit Quote</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
-    </div>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Quotes</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
   </nav>
 
-  <div class="container">
-    <div class="quote-switcher-controls">
-      <button id="show-random-btn" class="switch-btn active">Random Quote</button>
-      <button id="show-daily-btn" class="switch-btn">Daily Quote</button>
-    </div>
-
-    <div id="random-quote-section" class="quote-section">
-      <div class="random-quote-block">
-        <div class="quote-box block__main block__front">
-          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Quote 1</span></span>
-          <div class="author">Author 1</div>
-          <a class="new-quote" onclick="newQuote()">New Quote</a>
-          <a class="tweet-quote" href="#">Tweet</a>
-        </div>
-        <div class="quote-box block__main block__back" style="display: none;">
-          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Quote 2</span></span>
-          <div class="author">Author 2</div>
-          <a class="new-quote" onclick="newQuote()">New Quote</a>
-          <a class="tweet-quote" href="#">Tweet</a>
-        </div>
-      </div>
-    </div>
-
-    <div id="daily-quote-section" class="quote-section" style="display: none;">
-      <div class="daily-quote-block">
-        <div class="quote-box block__main">
-          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Daily Quote</span></span>
-          <div class="author">Author Name</div>
-          <a class="tweet-quote" href="#">Tweet</a>
-        </div>
-      </div>
-    </div>
+  <div class="quote-switcher-controls">
+    <button id="show-random-btn" class="switch-btn active">Random Quote</button>
+    <button id="show-daily-btn" class="switch-btn">Daily Quote</button>
   </div>
 
+  <!-- RANDOM QUOTE SECTION -->
+  <section id="random-quote-section">
+    <div class="quote-card">
+      <div class="block__main rotateF">
+        <div class="quote-box block__front">
+          <p class="quote-text">Loading quote...</p>
+          <p class="quote-author"></p>
+          <button class="upvote-btn">Upvote</button>
+        </div>
+        <div class="quote-box block__back">
+          <p class="quote-text">Back of quote</p>
+        </div>
+      </div>
+    </div>
+    <div class="quote-actions">
+      <button id="new-quote-btn">New Quote</button>
+      <button id="flip-quote-btn">Flip</button>
+    </div>
+  </section>
+
+  <!-- DAILY QUOTE SECTION -->
+  <section id="daily-quote-section" style="display: none;">
+    <div class="quote-card">
+      <div class="quote-box">
+        <p class="quote-text">This is your daily quote.</p>
+        <p class="quote-author">- Author Name</p>
+      </div>
+    </div>
+  </section>
+
   <script>
-    document.getElementById("show-random-btn").addEventListener("click", function () {
-      document.getElementById("random-quote-section").style.display = "block";
-      document.getElementById("daily-quote-section").style.display = "none";
-      this.classList.add("active");
-      document.getElementById("show-daily-btn").classList.remove("active");
+    const showRandomBtn = document.getElementById("show-random-btn");
+    const showDailyBtn = document.getElementById("show-daily-btn");
+    const randomSection = document.getElementById("random-quote-section");
+    const dailySection = document.getElementById("daily-quote-section");
+
+    showRandomBtn.addEventListener("click", () => {
+      randomSection.style.display = "block";
+      dailySection.style.display = "none";
+      showRandomBtn.classList.add("active");
+      showDailyBtn.classList.remove("active");
     });
 
-    document.getElementById("show-daily-btn").addEventListener("click", function () {
-      document.getElementById("random-quote-section").style.display = "none";
-      document.getElementById("daily-quote-section").style.display = "block";
-      this.classList.add("active");
-      document.getElementById("show-random-btn").classList.remove("active");
+    showDailyBtn.addEventListener("click", () => {
+      randomSection.style.display = "none";
+      dailySection.style.display = "block";
+      showDailyBtn.classList.add("active");
+      showRandomBtn.classList.remove("active");
     });
 
-    function newQuote() {
-      const front = document.querySelector('.block__front');
-      const back = document.querySelector('.block__back');
+    const newQuoteBtn = document.getElementById("new-quote-btn");
+    const flipQuoteBtn = document.getElementById("flip-quote-btn");
+    const quoteCard = document.querySelector(".block__main");
 
-      if (front.style.display !== "none") {
-        front.style.display = "none";
-        back.style.display = "flex";
-      } else {
-        front.style.display = "flex";
-        back.style.display = "none";
-      }
-    }
+    newQuoteBtn.addEventListener("click", () => {
+      document.querySelector(".quote-text").textContent = "\"This is a new random quote!\"";
+      document.querySelector(".quote-author").textContent = "- Random Author";
+    });
+
+    flipQuoteBtn.addEventListener("click", () => {
+      quoteCard.classList.toggle("rotateF");
+      quoteCard.classList.toggle("rotateB");
+    });
   </script>
 </body>
 </html>
