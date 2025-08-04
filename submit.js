@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 // Your Firebase config
 const firebaseConfig = {
@@ -13,7 +12,6 @@ const firebaseConfig = {
   measurementId: "G-XWP863T7K1"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -26,7 +24,7 @@ async function saveQuote(quote, author = "Anonymous") {
     });
     console.log("Quote saved:", quote, "by", author);
 
-    loadQuotes(); // Reload quotes after saving
+    loadQuotes(); // Reload quotes on submit page if you want to show them here too
   } catch (error) {
     console.error("Error saving quote:", error);
   }
@@ -34,6 +32,8 @@ async function saveQuote(quote, author = "Anonymous") {
 
 async function loadQuotes() {
   const quotesContainer = document.getElementById("shared-quotes");
+  if (!quotesContainer) return; // safety check
+
   quotesContainer.innerHTML = ""; // Clear existing quotes
 
   try {
@@ -45,7 +45,6 @@ async function loadQuotes() {
       quotes.push({ id: doc.id, ...data });
     });
 
-    // Sort by timestamp descending
     quotes.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
     quotes.forEach((quote) => {
@@ -65,14 +64,13 @@ async function loadQuotes() {
       quotesContainer.appendChild(quoteBox);
     });
 
-    // Add upvote click handlers (no persistence yet)
     document.querySelectorAll(".upvote-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const countSpan = btn.querySelector(".upvote-count");
         let count = parseInt(countSpan.textContent, 10) || 0;
         count++;
         countSpan.textContent = count;
-        btn.disabled = true; // Disable after one click
+        btn.disabled = true;
       });
     });
   } catch (error) {
@@ -80,7 +78,6 @@ async function loadQuotes() {
   }
 }
 
-// On form submit
 document.getElementById("quote-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -102,5 +99,5 @@ document.getElementById("quote-form").addEventListener("submit", async (e) => {
   }
 });
 
-// Load quotes once when page loads
+// Optional: load quotes here too if you want to show them on submit page
 loadQuotes();
