@@ -1,5 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
 
 // Your Firebase config
 const firebaseConfig = {
@@ -14,21 +22,35 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-async function saveQuote(quote, author = "Anonymous") {
+async function saveQuote(quote) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("You must be signed in to submit a quote.");
+    window.location.href = "/login.html"; 
+    return;
+  }
+
+  const authorName = user.displayName || "Anonymous";
+
   try {
     await addDoc(collection(db, "quotes"), {
       quote: quote,
-      author: author,
-      timestamp: serverTimestamp()
+      author: authorName,
+      timestamp: serverTimestamp(),
+      upvotes: 0
     });
-    console.log("Quote saved:", quote, "by", author);
 
-    loadQuotes(); // Reload quotes on submit page if you want to show them here too
+    console.log("Quote saved:", quote, "by", authorName);
+    loadQuotes();
   } catch (error) {
     console.error("Error saving quote:", error);
   }
 }
+
 
 async function loadQuotes() {
   const quotesContainer = document.getElementById("shared-quotes");
