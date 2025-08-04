@@ -324,3 +324,88 @@ body{
 .upvote-btn:disabled {
     cursor: not-allowed;
 }
+/* ----------------------------- */
+/* 📱 Mobile Styles (max 768px) */
+/* ----------------------------- */
+@media screen and (max-width: 768px) {
+  .navbar-content,
+  .footer-content,
+  .container,
+  .container-shared,
+  .quote-box,
+  .quote-form,
+  .alert-success {
+    max-width: 90vw;
+  }
+
+  .navbar-title {
+    font-size: 22px;
+    margin-left: 10px;
+    text-align: center;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar-links li {
+    margin: 10px 0;
+  }
+
+  .text {
+    font-size: 22px;
+    padding: 0 5px;
+  }
+
+  .author {
+    font-size: 16px;
+  }
+
+  .new-quote,
+  .tweet-quote,
+  .submit-quote,
+  .upvote-btn {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .quote-box {
+    padding: 1.5rem;
+  }
+
+  .quote-form {
+    padding: 1rem;
+  }
+
+  .random-quote-block {
+    margin-bottom: 20rem;
+  }
+}
+
+/* ------------------------------ */
+/* 🔄 Adjustments for Orientation */
+/* ------------------------------ */
+
+/* Portrait mode (tall phones) */
+@media screen and (orientation: portrait) {
+  .quote-box {
+    width: 90%;
+  }
+}
+
+/* Landscape mode (wide phones) */
+@media screen and (orientation: landscape) {
+  .quote-box {
+    width: 80%;
+    font-size: 12px;
+  }
+
+  .text {
+    font-size: 20px;
+  }
+
+  .author {
+    font-size: 14px;
+  }
+}
