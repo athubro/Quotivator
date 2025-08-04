@@ -1,7 +1,7 @@
 // Firebase CDN-based imports (no bundler or Node needed)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { getAuth } from 'firebase/auth';
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 // ✅ Your Firebase config
 const firebaseConfig = {
