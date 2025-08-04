@@ -18,11 +18,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ✅ Example submit function
-document.getElementById("quoteForm").addEventListener("submit", async (e) => {
+document.getElementById("quote-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const quoteText = document.getElementById("quote").value;
-  const quoteAuthor = document.getElementById("author").value;
+  const quoteText = document.getElementById("quote-text").value;
+  const quoteAuthor = document.getElementById("quote-author").value;
 
   try {
     await addDoc(collection(db, "quotes"), {
@@ -32,7 +32,7 @@ document.getElementById("quoteForm").addEventListener("submit", async (e) => {
     });
 
     alert("Quote submitted!");
-    document.getElementById("quoteForm").reset();
+    document.getElementById("quote-form").reset();
   } catch (error) {
     console.error("Error adding quote:", error);
     alert("Error submitting quote. Check the console.");
