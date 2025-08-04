@@ -54,7 +54,7 @@ async function loadQuotes() {
       quoteBox.className = "quote-box shared-quote";
 
       quoteBox.innerHTML = `
-        <div class="text">“${quote.text}”</div>
+        <div class="text">“${quote.quote}”</div>
         <div class="author">– ${quote.author || "Anonymous"}</div>
         <div class="text-center">
           <button class="upvote-btn" data-id="${quote.id}">
