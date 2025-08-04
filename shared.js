@@ -37,7 +37,16 @@ async function loadQuotes() {
       quotes.push({ id: docSnap.id, ...data });
     });
 
-    quotes.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+    quotes.sort((a, b) => {
+      if ((b.upvotes || 0) !== (a.upvotes || 0)) {
+        // Sort by upvotes descending
+        return (b.upvotes || 0) - (a.upvotes || 0);
+      } else {
+        // If upvotes are equal, sort by timestamp descending (newer first)
+        return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0);
+      }
+    });
+
 
     quotes.forEach((quote) => {
       const quoteBox = document.createElement("div");
