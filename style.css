@@ -1,166 +1,279 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffe5bc 0%, #fad0c4 100%);
+  font-family: 'Open Sans Condensed', 'Roboto', Arial, sans-serif;
+  color: #222;
+  transition: background 0.5s ease-in;
+  overflow: hidden;
+}
 
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: linear-gradient(90deg, #FFD580 70%, #FFA07A 100%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  z-index: 1000;
+  height: 5.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid #ffb74d;
+}
 
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-		// Initialize Firebase
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+.navbar-content {
+  max-width: 900px;
+  width: 92vw;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-<!-- Firebase Analytics (optional) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"></script>
+.navbar-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  border: 3px solid orange;
+  border-radius: 0.7rem;
+  background: linear-gradient(90deg, #fff, #FFA500 70%);
+  color: #222;
+  padding: 0.2em 1em;
+  margin: 0;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 10px rgba(255, 165, 0, 0.12);
+}
 
-<!-- Firebase Firestore -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 2.2rem;
+}
 
-<script>
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
-    authDomain: "quoteapp-e57e7.firebaseapp.com",
-    projectId: "quoteapp-e57e7",
-    storageBucket: "quoteapp-e57e7.appspot.com",
-    messagingSenderId: "1065813414568",
-    appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-    measurementId: "G-XWP863T7K1"
-  };
+.navbar-links a {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  text-decoration: none;
+  padding: 0.6em 1.3em;
+  border-radius: 0.7em;
+  background: linear-gradient(90deg, #fff3e0 60%, #ffe0b2 100%);
+  transition: color 0.3s, background 0.2s, transform 0.2s;
+}
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  const db = firebase.firestore();
-</script>
-		<script type="module">
-		  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-		  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+.navbar-links a:hover {
+  color: #ed4264;
+  background: #fff9c4;
+  transform: scale(1.09);
+}
 
-		  const firebaseConfig = {
-			apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
-			authDomain: "quoteapp-e57e7.firebaseapp.com",
-			projectId: "quoteapp-e57e7",
-			storageBucket: "quoteapp-e57e7.appspot.com",
-			messagingSenderId: "1065813414568",
-			appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-			measurementId: "G-XWP863T7K1"
-		  };
+/* Container */
+.container {
+  padding-top: 6.7rem;
+  padding-bottom: 2rem;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0 auto;
+  min-height: calc(100vh - 8.7rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
 
-		  const app = initializeApp(firebaseConfig);
-		  const analytics = getAnalytics(app);
-		</script>
-<html>
-  <head>
-    <!-- Loading The Bootstrap Library -->
-    <link rel="stylesheet" 
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
-          crossorigin="anonymous"/>
+/* Quote Section Blocks */
+.block {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-    <!-- Loading Icons From Font Awesome -->
-    <link rel="stylesheet" 
-          href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" 
-          crossorigin="anonymous">
+.random-quote-block,
+.daily-quote-block {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
 
-    <!-- Linking Your CSS File -->
-    <link rel="stylesheet" href="style.css"/>
+.random-quote-block {
+  margin-bottom: 5rem;
+  height: 340px;
+  perspective: 1200px;
+}
 
-    <!-- Loading Roboto Font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" 
-          rel="stylesheet">
+.daily-quote-block {
+  height: 340px;
+}
 
-    <!-- Loading Open Sans Font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&display=swap" 
-          rel="stylesheet">
-  
-    <title>Quotivate</title>
-  </head>
+h2 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #f6795c;
+  margin-bottom: 0.5em;
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 6px #fff8e1;
+}
 
-  <body id="body">
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="navbar-content">
-        <h1 class="navbar-title">Quotivator</h1>
-        <ul class="navbar-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shared.html">Shared Quotes</a></li>
-          <li><a href="about.html">Submit a Quote</a></li>
-        </ul>
-      </div>
-    </nav>
+/* Flip Containers */
+.quote-box {
+  border-radius: 1.5rem;
+  box-shadow: 0 1.5rem 4rem rgba(246, 121, 92, 0.09), 0 0.5rem 2rem #ffe5bc;
+  background: linear-gradient(115deg, #fffbe9 75%, #ffe5bc 100%);
+  max-width: 700px;
+  width: 700px;
+  min-height: 260px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid #ffd580;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
 
-    <div class="container">
-      <!-- Random Quote Box -->
-      <div class="block text-center random-quote-block">
-        <h2>Random Quote</h2>
-        <div class="quote-box block__main block__front">
-          <span class="quote">
-            <i class="fas fa-2x fa-quote-left"></i>
-            <span class="text">Quote To be Displayed Here</span>
-          </span>
-          <div class="author">Author to be Displayed Here</div>
-          <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-        </div>
-        <div class="quote-box block__main block__back">
-          <span class="quote">
-            <i class="fas fa-2x fa-quote-left"></i>
-            <span class="text">Quote To be Displayed Here</span>
-          </span>
-          <div class="author">Author to be Displayed Here</div>
-          <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-        </div>
-      </div>
+.block__main {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(.86,.01,.57,1.03);
+  backface-visibility: hidden;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
 
-      <!-- Daily Quote Box -->
-      <div class="block text-center daily-quote-block">
-        <h2>Daily Quote</h2>
-        <div class="quote-box block__main">
-          <span class="quote">
-            <i class="fas fa-2x fa-quote-left"></i>
-            <span class="text">Daily Quote To be Displayed Here</span>
-          </span>
-          <div class="author">Author to be Displayed Here</div>
-          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Linking Your JavaScript File -->
-    <script src="script.js"></script>
-  </body>
-</html>
+.block__front {
+  transform: rotateY(0deg);
+  z-index: 2;
+}
+.block__back {
+  transform: rotateY(180deg);
+  z-index: 1;
+}
+
+.rotateF {
+  transform: rotateY(-180deg);
+}
+.rotateB {
+  transform: rotateY(0deg);
+}
+
+/* Quote Text */
+.text {
+  display: block;
+  width: 100%;
+  font-size: clamp(1.1rem, 3vw, 2.6rem);
+  font-weight: 600;
+  background-image: linear-gradient(to right bottom, #9B870D, #FFA500);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-align: center;
+  line-height: 1.25;
+  margin: 0.7em 0 0.2em 0;
+  letter-spacing: 1.2px;
+}
+
+.quote {
+  width: 100%;
+  text-align: center;
+}
+
+.author {
+  margin-top: 0.5em;
+  font-size: clamp(1rem, 1.7vw, 1.5rem);
+  background-image: linear-gradient(to right bottom, #28313B, #485461);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.6;
+}
+
+/* Buttons */
+.new-quote, .tweet-quote, .switch-btn {
+  font-size: 1.07rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  padding: 0.7em 1.3em;
+  margin: 0.6em 0.4em;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 6px rgba(246,121,92,0.08);
+}
+
+.new-quote {
+  background: linear-gradient(90deg, #ffd580 80%, #f6795c 100%);
+  color: #333;
+}
+
+.tweet-quote {
+  background: linear-gradient(90deg, #1DA1F2 80%, #63e6ff 100%);
+  color: #fff;
+  padding-left: 2em;
+  position: relative;
+}
+
+.tweet-quote::before {
+  content: "\f099";
+  font-family: "Font Awesome 5 Brands";
+  position: absolute;
+  left: 0.8em;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.switch-btn {
+  background: #fff3e0;
+  border: 2px solid #ffb74d;
+  color: #f6795c;
+}
+
+.switch-btn.active {
+  background: linear-gradient(90deg, #ffd580 70%, #f6795c 100%);
+  color: white;
+  border: 2px solid #f6795c;
+}
+
+.switch-btn:hover {
+  background: #ffe0b2;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .quote-box, .random-quote-block, .daily-quote-block {
+    max-width: 98vw;
+    width: 98vw;
+  }
+  .quote-box {
+    min-height: 210px;
+    height: 210px;
+  }
+  .random-quote-block,
+  .daily-quote-block {
+    height: 210px;
+  }
+}
+
