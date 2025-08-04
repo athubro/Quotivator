@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+    }
+    hr {
+      margin: 20px 0;
+    }
+    #status {
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Login or Sign Up</h2>
+
+  <form id="auth-form">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Login / Sign Up</button>
+  </form>
+
+  <hr />
+
+  <button id="google-login">Sign in with Google</button>
+
+  <p id="status"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
+      authDomain: "quoteapp-e57e7.firebaseapp.com",
+      projectId: "quoteapp-e57e7",
+      storageBucket: "quoteapp-e57e7.appspot.com",
+      messagingSenderId: "1065813414568",
+      appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
+      measurementId: "G-XWP863T7K1"
+    };
+
+    // ✅ Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const status = document.getElementById("status");
+
+    // Email/Password Login or Signup
+    document.getElementById("auth-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        // Try logging in first
+        await signInWithEmailAndPassword(auth, email, password);
+        status.textContent = "Logged in successfully!";
+      } catch (err) {
+        if (err.code === "auth/user-not-found") {
+          try {
+            // If no user, create account
+            await createUserWithEmailAndPassword(auth, email, password);
+            status.textContent = "Account created and logged in!";
+          } catch (signupErr) {
+            status.textContent = "Signup failed: " + signupErr.message;
+          }
+        } else {
+          status.textContent = "Login failed: " + err.message;
+        }
+      }
+    });
+
+    // Google Sign-In
+    document.getElementById("google-login").addEventListener("click", async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        status.textContent = "Signed in with Google!";
+        alert("You signed in successfully");
+      } catch (err) {
+        status.textContent = "Google sign-in failed: " + err.message;
+        alert('sign in failed');
+      }
+    });
+
+    // Login state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        status.textContent = `Logged in as: ${user.displayName || user.email}`;
+        window.location.href = "index.html"
+      }
+    });
+  </script>
+</body>
+</html>
