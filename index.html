@@ -1,172 +1,95 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotivate</title>
 
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&display=swap" rel="stylesheet">
 
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
 
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
-		// Initialize Firebase
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<!-- Firebase Analytics (optional) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"></script>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <h1 class="navbar-title">Quotivate</h1>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shared.html">Shared Quotes</a></li>
+        <li><a href="about.html">Submit Quote</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
 
-<!-- Firebase Firestore -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <div class="container">
+    <div class="quote-switcher-controls">
+      <button id="show-random-btn" class="switch-btn active">Random Quote</button>
+      <button id="show-daily-btn" class="switch-btn">Daily Quote</button>
+    </div>
 
-<script>
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
-    authDomain: "quoteapp-e57e7.firebaseapp.com",
-    projectId: "quoteapp-e57e7",
-    storageBucket: "quoteapp-e57e7.appspot.com",
-    messagingSenderId: "1065813414568",
-    appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-    measurementId: "G-XWP863T7K1"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  const db = firebase.firestore();
-</script>
-		<script type="module">
-		  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-		  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
-
-		  const firebaseConfig = {
-			apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
-			authDomain: "quoteapp-e57e7.firebaseapp.com",
-			projectId: "quoteapp-e57e7",
-			storageBucket: "quoteapp-e57e7.appspot.com",
-			messagingSenderId: "1065813414568",
-			appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-			measurementId: "G-XWP863T7K1"
-		  };
-
-		  const app = initializeApp(firebaseConfig);
-		  const analytics = getAnalytics(app);
-		</script>
-<html>
-  <head>
-    <!-- Loading The Bootstrap Library -->
-    <link rel="stylesheet" 
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
-          crossorigin="anonymous"/>
-
-    <!-- Loading Icons From Font Awesome -->
-    <link rel="stylesheet" 
-          href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" 
-          crossorigin="anonymous">
-
-    <!-- Linking Your CSS File -->
-    <link rel="stylesheet" href="style.css"/>
-
-    <!-- Loading Roboto Font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" 
-          rel="stylesheet">
-
-    <!-- Loading Open Sans Font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&display=swap" 
-          rel="stylesheet">
-  
-    <title>Quotivate</title>
-  </head>
-
-  <body id="body">
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="navbar-content">
-        <h1 class="navbar-title">Quotivate</h1>
-        <ul class="navbar-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shared.html">Shared Quotes</a></li>
-          <li><a href="about.html">Submit Quote</a></li>
-          <li><a href="login.html">Login</a></li>
-        </ul>
+    <div id="random-quote-section" class="quote-section">
+      <div class="random-quote-block">
+        <div class="quote-box block__main block__front">
+          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Quote 1</span></span>
+          <div class="author">Author 1</div>
+          <a class="new-quote" onclick="newQuote()">New Quote</a>
+          <a class="tweet-quote" href="#">Tweet</a>
+        </div>
+        <div class="quote-box block__main block__back" style="display: none;">
+          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Quote 2</span></span>
+          <div class="author">Author 2</div>
+          <a class="new-quote" onclick="newQuote()">New Quote</a>
+          <a class="tweet-quote" href="#">Tweet</a>
+        </div>
       </div>
-    </nav>
+    </div>
 
-    <div class="container">
-  <div class="quote-switcher-controls" style="text-align:center; margin-bottom: 2rem;">
-    <button id="show-random-btn" class="switch-btn active">Random Quote</button>
-    <button id="show-daily-btn" class="switch-btn">Daily Quote</button>
-  </div>
-  <div id="random-quote-section" class="quote-section">
-    <div class="block-label">Random Quote</div>
-    <div class="block text-center random-quote-block" style="position:relative;">
-      <div class="quote-box block__main block__front">
-        <span class="quote">
-          <i class="fas fa-2x fa-quote-left"></i>
-          <span class="text">Quote To be Displayed Here</span>
-        </span>
-        <div class="author">Author to be Displayed Here</div>
-        <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-        <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-      </div>
-      <div class="quote-box block__main block__back" style="display:none;">
-        <span class="quote">
-          <i class="fas fa-2x fa-quote-left"></i>
-          <span class="text">Quote To be Displayed Here</span>
-        </span>
-        <div class="author">Author to be Displayed Here</div>
-        <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-        <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
+    <div id="daily-quote-section" class="quote-section" style="display: none;">
+      <div class="daily-quote-block">
+        <div class="quote-box block__main">
+          <span class="quote"><i class="fas fa-quote-left"></i><span class="text">Daily Quote</span></span>
+          <div class="author">Author Name</div>
+          <a class="tweet-quote" href="#">Tweet</a>
+        </div>
       </div>
     </div>
   </div>
-  <div id="daily-quote-section" class="quote-section" style="display:none;">
-    <div class="block-label">Daily Quote</div>
-    <div class="block text-center daily-quote-block" style="position:relative;">
-      <div class="quote-box block__main">
-        <span class="quote">
-          <i class="fas fa-2x fa-quote-left"></i>
-          <span class="text">Daily Quote To be Displayed Here</span>
-        </span>
-        <div class="author">Author to be Displayed Here</div>
-        <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-      </div>
-    </div>
-  </div>
-</div>
-  
-    <!-- Linking Your JavaScript File -->
-    <script src="script.js"></script>
-  </body>
+
+  <script>
+    document.getElementById("show-random-btn").addEventListener("click", function () {
+      document.getElementById("random-quote-section").style.display = "block";
+      document.getElementById("daily-quote-section").style.display = "none";
+      this.classList.add("active");
+      document.getElementById("show-daily-btn").classList.remove("active");
+    });
+
+    document.getElementById("show-daily-btn").addEventListener("click", function () {
+      document.getElementById("random-quote-section").style.display = "none";
+      document.getElementById("daily-quote-section").style.display = "block";
+      this.classList.add("active");
+      document.getElementById("show-random-btn").classList.remove("active");
+    });
+
+    function newQuote() {
+      const front = document.querySelector('.block__front');
+      const back = document.querySelector('.block__back');
+
+      if (front.style.display !== "none") {
+        front.style.display = "none";
+        back.style.display = "flex";
+      } else {
+        front.style.display = "flex";
+        back.style.display = "none";
+      }
+    }
+  </script>
+</body>
 </html>
