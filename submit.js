@@ -111,7 +111,7 @@ document.getElementById("quote-form").addEventListener("submit", async (e) => {
   }
 
   try {
-    await saveQuote(quoteText, quoteAuthor);
+    await saveQuote(quoteText);
 
     alert("Quote submitted!");
     document.getElementById("quote-form").reset();
