@@ -104,7 +104,6 @@ document.getElementById("quote-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const quoteText = document.getElementById("quote-text").value.trim();
-  const quoteAuthor = document.getElementById("quote-author").value.trim();
 
   if (!quoteText) {
     alert("Please enter a quote!");
