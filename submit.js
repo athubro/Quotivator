@@ -33,6 +33,54 @@ async function saveQuote(quote, author = "Anonymous") {
     console.error("Error saving quote:", error);
   }
 }
+async function loadQuotes() {
+  const quotesContainer = document.getElementById("shared-quotes");
+  quotesContainer.innerHTML = ""; // Clear existing quotes
+
+  try {
+    const quotesSnapshot = await getDocs(collection(db, "quotes"));
+    const quotes = [];
+
+    quotesSnapshot.forEach((doc) => {
+      const data = doc.data();
+      quotes.push({ id: doc.id, ...data });
+    });
+
+    // Sort quotes by timestamp (newest first)
+    quotes.sort((a, b) => b.timestamp?.seconds - a.timestamp?.seconds);
+
+    quotes.forEach((quote) => {
+      const quoteBox = document.createElement("div");
+      quoteBox.className = "quote-box shared-quote";
+
+      quoteBox.innerHTML = `
+        <div class="text">“${quote.text}”</div>
+        <div class="author">– ${quote.author || "Anonymous"}</div>
+        <div class="text-center">
+          <button class="upvote-btn" data-id="${quote.id}">
+            Upvote <span class="upvote-count">0</span>
+          </button>
+        </div>
+      `;
+
+      quotesContainer.appendChild(quoteBox);
+    });
+
+    // Add upvote button event listeners (this demo version doesn’t save votes yet)
+    document.querySelectorAll(".upvote-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const countSpan = btn.querySelector(".upvote-count");
+        let count = parseInt(countSpan.textContent, 10) || 0;
+        count++;
+        countSpan.textContent = count;
+        btn.disabled = true; // Prevent spamming
+      });
+    });
+  } catch (error) {
+    console.error("Error loading quotes:", error);
+  }
+}
+
 
 // ✅ Example submit function
 document.getElementById("quote-form").addEventListener("submit", async (e) => {
