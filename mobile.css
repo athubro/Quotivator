@@ -1,0 +1,107 @@
+/* 📱 Enhanced Mobile Styles (max-width: 600px) */
+@media screen and (max-width: 600px) {
+  body {
+    font-family: 'Helvetica Neue', sans-serif;
+    padding-top: 4rem;
+    background-color: #fffafc;
+    color: #333;
+  }
+
+  .navbar-content,
+  .footer-content,
+  .container,
+  .container-shared,
+  .quote-box,
+  .quote-form,
+  .alert-success {
+    width: 100%;
+    padding: 1.2rem 1.2rem;
+    margin: 0 auto;
+  }
+
+  .navbar-title {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .navbar-links li {
+    margin: 5px 0;
+  }
+
+  .text {
+    font-size: 22px;
+    line-height: 1.5;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .author {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 0.5rem;
+    color: #555;
+  }
+
+  .new-quote,
+  .tweet-quote,
+  .submit-quote,
+  .upvote-btn {
+    font-size: 15px;
+    padding: 10px 16px;
+    margin: 0.4rem auto;
+    display: block;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+  }
+
+  .quote-box {
+    background: #fff0f4;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 3rem;
+  }
+
+  .quote-form {
+    background: #ffeaf3;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    margin-top: 2rem;
+  }
+
+  .random-quote-block {
+    margin-bottom: 20rem;
+  }
+}
+
+/* 🔄 Adjustments for Portrait Orientation */
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .quote-box {
+    width: 95%;
+  }
+}
+
+/* 🔄 Adjustments for Landscape Orientation */
+@media screen and (max-width: 600px) and (orientation: landscape) {
+  .quote-box {
+    width: 90%;
+    font-size: 14px;
+  }
+
+  .text {
+    font-size: 20px;
+  }
+
+  .author {
+    font-size: 14px;
+  }
+}
