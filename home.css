@@ -1,90 +1,87 @@
-*{
-    margin:0;
-    padding:0;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-body{
-    min-height:100vh;
-    transition: 0.5s;
-    transition-timing-function: ease-in;
-    background-image: url('mot.jpg');
+body {
+    min-height: 100vh;
+    transition: 0.5s ease-in;
+    background: linear-gradient(to right, #ffe0f0, #ffc8dd);
     background-repeat: no-repeat;
     background-size: cover;
+    font-family: 'Quicksand', 'Poppins', sans-serif;
+    scroll-behavior: smooth;
 }
 
+/* Navbar */
 .navbar {
     position: fixed;
-    top: 0;
+    top: -2rem;
     width: 100%;
-    background-color: #FFD580;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #ff1493;
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
     z-index: 1000;
-    padding: 1.5rem 0;
-    height: 4rem;
+    padding: 1rem 0;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
 }
 
+
 .navbar-content {
-    max-width: 50vw;
-    margin: -10 auto;
+    max-width: 90vw;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .navbar-title {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Rubik Bubbles', cursive;
     font-size: 28px;
-    border: 5px solid orange;
-    border-radius: .5rem;
-    font-weight: 5;
-    background-color: black;
-    color: transparent;
-    -webkit-background-clip: text;
-    margin: 0;
-    margin-left = 10;
+    border: 4px dashed #ff69b4;
+    border-radius: 1rem;
+    font-weight: 600;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    color: #ff1493;
+    text-shadow: 1px 1px #fff;
+    
 }
 
 .navbar-links {
     list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
-}
-
-.navbar-links li {
-    margin-left: 30px;
+    gap: 2rem;
+    
+    font-size: 18px;
+    margin-bottom: -2rem;
 }
 
 .navbar-links a {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #333;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff1493;
     text-decoration: none;
-    transition: color 0.3s, transform 0.3s;
+    transition: all 0.3s ease-in-out;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    background-color: #fff0f5;
 }
 
 .navbar-links a:hover {
-    color: #ed4264;
+    color: #fff;
+    background-color: #ff69b4;
     transform: scale(1.1);
 }
 
-.container {
-    padding-top: 4rem; /* Reduced from 6rem to move boxes up */
-    padding-bottom: 2rem;
-    max-width: 50vw;
-    margin: 0 auto;
-    min-height: calc(100vh - 10rem);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
+/* Containers */
+.container,
 .container-shared {
     padding-top: 6rem;
     padding-bottom: 2rem;
-    max-width: 50vw;
+    max-width: 90vw;
     margin: 0 auto;
     min-height: calc(100vh - 10rem);
     display: flex;
@@ -92,42 +89,19 @@ body{
     align-items: center;
 }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-image: linear-gradient(to right bottom, #ed4264a8, #ffedbca8);
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    padding: 1rem 0;
-    text-align: center;
-}
-
-.footer-content {
-    max-width: 50vw;
-    margin: 0 auto;
-}
-
-.footer-content p {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    color: #333;
-    margin: 0;
-}
-
+/* Flip animation */
 .random-quote-block {
-    margin-bottom: 30rem;
+    margin-bottom: 25rem;
     position: relative;
     perspective: 150rem;
-}
-
-.daily-quote-block {
-    margin-bottom: 30px;
+    width: 100%;
 }
 
 .flip-container {
     position: relative;
     width: 100%;
     height: 300px;
+    perspective: 150rem;
 }
 
 .block__main {
@@ -153,156 +127,77 @@ body{
     transform: rotateY(0deg);
 }
 
+/* Quote box */
 .quote-box {
-    padding: 3rem;
-    border-radius: .5rem;
-    box-shadow: 0rem 1.5rem 4rem rgba(0, 0, 0, 0.15);
-    background-color: #FFFFC5;
-    max-width: 45vw;
-    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0rem 1.5rem 3rem rgba(0, 0, 0, 0.15);
+    background-color: #fff0f5;
+    max-width: 90vw;
+    margin: 1rem auto;
 }
 
-.daily-quote-block .quote-box,
-.shared-quote {
-    margin-bottom: 20px;
+/* Daily quote */
+.daily-quote-block {
+   
+    position: relative;
+    perspective: 150rem;
+    width: 100%;
 }
 
-.random-quote-block .quote-box {
-    margin: 0 auto;
-}
-
+/* Quote text */
 .text {
-    font-size: 30px;
-    padding-left: 10px;
-    transition: 0.5s;
-    transition-timing-function: ease-in;
-    font-family: 'Roboto', sans-serif;
-    background-image: linear-gradient(to right bottom, #9B870D, #FFA500);
-    color: transparent;
-    -webkit-background-clip: text;
-    overflow-wrap: break-word;
+    font-family: 'Patrick Hand', cursive;
+    font-weight: bold;
+    font-size: 26px;
+    font-weight: 600;
     text-align: center;
+    color: #c71585;
+    text-shadow: 1px 1px #fff;
+    margin-bottom: 1rem;
 }
 
-.quote {
-    transition: 0.5s;
-    transition-timing-function: ease-in;
-    display: inline-block;
+.author {
+    font-size: 20px;
+    text-align: center;
+    color: #d87093;
+    margin-bottom: 1rem;
 }
 
-.new-quote {
-    font-size: 15px;
-    border-radius: 5px;
+/* Buttons */
+.new-quote,
+.tweet-quote,
+.upvote-btn,
+.submit-quote {
+    font-size: 16px;
+    border-radius: 10px;
     cursor: pointer;
-    padding-bottom: 8px;
-    padding-top: 9px;
-    margin-top: 5px;
-    margin-left: 5px;
-    background-image: linear-gradient(to right bottom, #ed4264a8, #ffedbca8);
+    padding: 10px 16px;
+    margin: 5px;
     display: inline-block;
+    background-image: linear-gradient(to right bottom, #ff69b4, #ffc0cb);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.2);
 }
 
 .tweet-quote {
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px 12px 8px 28px;
-    margin-top: 5px;
-    margin-left: 5px;
-    background-color: #1DA1F2;
-    color: white;
-    display: inline-block;
+    padding-left: 30px;
+    background-color: #ff85c1;
     position: relative;
-    text-decoration: none;
 }
 
 .tweet-quote::before {
     content: "\f099";
     font-family: "Font Awesome 5 Brands";
     position: absolute;
-    left: 8px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 14px;
 }
 
-.text-center {
-    text-align: center;
-}
-
-.new-quote:hover {
-    opacity: 0.6;
-}
-
-.tweet-quote:hover {
-    background-color: #1991DB;
-}
-
-.author {
-    margin: 10px;
-    font-size: 20px;
-    transition: 0.5s;
-    transition-timing-function: ease-in;
-    font-family: 'Open Sans Condensed', sans-serif;
-    background-image: linear-gradient(to right bottom, #28313B, #485461);
-    color: transparent;
-    -webkit-background-clip: text;
-    text-align: center;
-}
-
-.quote-form {
-    max-width: 45vw;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: #FFFFC5;
-    border-radius: .5rem;
-    box-shadow: 0rem 1.5rem 4rem rgba(0, 0, 0, 0.15);
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-control {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    padding: 10px;
-}
-
-.submit-quote {
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px 12px;
-    margin-top: 10px;
-    background-image: linear-gradient(to right bottom, #ed4264a8, #ffedbca8);
-    display: inline-block;
-}
-
-.submit-quote:hover {
-    opacity: 0.6;
-}
-
-.alert-success {
-    margin-top: 1rem;
-    max-width: 45vw;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.alert-success.hidden {
-    display: none;
-}
-
 .upvote-btn {
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 8px 12px 8px 28px;
-    margin-top: 5px;
-    margin-left: 5px;
-    background-image: linear-gradient(to right bottom, #9B870D, #FFA500);
-    display: inline-block;
     position: relative;
 }
 
@@ -311,101 +206,149 @@ body{
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
-    left: 8px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 14px;
+}
+
+.upvote-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .upvote-btn:hover:not(:disabled) {
     opacity: 0.6;
 }
 
-.upvote-btn:disabled {
-    cursor: not-allowed;
-}
-/* ----------------------------- */
-/* 📱 Mobile Styles (max 768px) */
-/* ----------------------------- */
-@media screen and (max-width: 768px) {
-  .navbar-content,
-  .footer-content,
-  .container,
-  .container-shared,
-  .quote-box,
-  .quote-form,
-  .alert-success {
+/* Quote form */
+.quote-form {
     max-width: 90vw;
-  }
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fffafc;
+    border-radius: 1rem;
+    box-shadow: 0rem 1.5rem 3rem rgba(0, 0, 0, 0.1);
+}
 
-  .navbar-title {
-    font-size: 22px;
-    margin-left: 10px;
-    text-align: center;
-  }
+.form-group {
+    margin-bottom: 1.5rem;
+}
 
-  .navbar-links {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .navbar-links li {
-    margin: 10px 0;
-  }
-
-  .text {
-    font-size: 22px;
-    padding: 0 5px;
-  }
-
-  .author {
+.form-control {
     font-size: 16px;
-  }
+    padding: 10px;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #ffc0cb;
+}
 
-  .new-quote,
-  .tweet-quote,
-  .submit-quote,
-  .upvote-btn {
-    font-size: 14px;
-    padding: 6px 10px;
-  }
-
-  .quote-box {
-    padding: 1.5rem;
-  }
-
-  .quote-form {
+.alert-success {
+    margin-top: 1rem;
+    max-width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffe4e1;
     padding: 1rem;
-  }
-
-  .random-quote-block {
-    margin-bottom: 20rem;
-  }
+    border-radius: 1rem;
+    color: #c71585;
+    text-align: center;
 }
 
-/* ------------------------------ */
-/* 🔄 Adjustments for Orientation */
-/* ------------------------------ */
-
-/* Portrait mode (tall phones) */
-@media screen and (orientation: portrait) {
-  .quote-box {
-    width: 90%;
-  }
+.alert-success.hidden {
+    display: none;
 }
 
-/* Landscape mode (wide phones) */
-@media screen and (orientation: landscape) {
-  .quote-box {
-    width: 80%;
-    font-size: 12px;
-  }
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-image: linear-gradient(to right bottom, #ffb6c1, #ffdde1);
+    box-shadow: 0 -2px 5px rgba(255, 105, 180, 0.2);
+    padding: 1rem 0;
+    text-align: center;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
 
-  .text {
-    font-size: 20px;
-  }
+.footer-content {
+    max-width: 90vw;
+    margin: 0 auto;
+}
 
-  .author {
-    font-size: 14px;
-  }
+.footer-content p {
+    font-size: 16px;
+    color: #8b008b;
+    margin: 0;
+}
+.random-quote-block h2,
+.daily-quote-block h2 {
+    font-family: 'Rubik Bubbles', cursive;
+    font-size: 32px;
+    color: #ff1493;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.text-center h2 {
+    font-family: 'Rubik Bubbles', cursive;
+    font-size: 32px;
+    color: #ff1493;
+    text-align: center;
+    margin-bottom: 1rem;
+
+    .hero-section {
+  position: relative;
+  height: 90vh;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arc {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: #fff0f5;
+  border-top-left-radius: 100% 40px;
+  border-top-right-radius: 100% 40px;
+  z-index: 2;
+}
+
+.hero-text {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  z-index: 3;
+}
+
+/* Mission Section Fade-in */
+.mission-section {
+  padding: 5rem 2rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.mission-section.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mission-text {
+  font-family: 'Patrick Hand', cursive;
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 1.3rem;
 }
