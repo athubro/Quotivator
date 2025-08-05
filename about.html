@@ -61,7 +61,7 @@
       return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    // Create a new <link> element for the stylesheet
+    function isMobileDevice()
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = isMobileDevice() ? 'mobile.css' : 'style.css';
