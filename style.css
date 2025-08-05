@@ -35,6 +35,7 @@ body {
 }
 
 .navbar-title {
+    font-family: 'Rubik Bubbles', cursive;
     font-size: 28px;
     border: 4px dashed #ff69b4;
     border-radius: 1rem;
@@ -56,8 +57,9 @@ body {
 }
 
 .navbar-links a {
+    font-family: 'Patrick Hand', cursive;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: bold;
     color: #ff1493;
     text-decoration: none;
     transition: all 0.3s ease-in-out;
@@ -278,7 +280,7 @@ body {
 }
 .random-quote-block h2,
 .daily-quote-block h2 {
-    font-family: 'Patrick Hand', cursive;
+    font-family: 'Rubik Bubbles', cursive;
     font-size: 32px;
     color: #ff1493;
     text-align: center;
