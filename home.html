@@ -23,32 +23,25 @@
       color: #333;
     }
 
-    /* Floating hearts background */
-    .floating-heart {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background-color: pink;
-      border-radius: 50%;
-      animation: floatUp 6s infinite ease-in;
-      opacity: 0.5;
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.5;
-      }
-      100% {
-        transform: translateY(-800px) scale(1.5);
-        opacity: 0;
-      }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(#ffd6e7 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .hero-section {
       position: relative;
-      height: 90vh;
+      height: 85vh;
       width: 100%;
+      clip-path: ellipse(100% 90% at 50% 0%);
       background-image: url('https://t4.ftcdn.net/jpg/02/75/71/89/360_F_275718943_ORKB0mXTEoa3YuKB0Ng8hBJPmB5JXxFl.jpg');
       background-size: cover;
       background-position: center;
@@ -58,45 +51,6 @@
       overflow: hidden;
     }
 
-    .cloud {
-      position: absolute;
-      width: 150px;
-      height: 80px;
-      background: #fff;
-      border-radius: 100px;
-      opacity: 0.3;
-      animation: moveClouds 40s linear infinite;
-    }
-
-    .cloud:before, .cloud:after {
-      content: '';
-      position: absolute;
-      background: #fff;
-      width: 100px;
-      height: 100px;
-      position: absolute;
-      border-radius: 50%;
-    }
-
-    .cloud:before {
-      top: -30px;
-      left: 10px;
-    }
-
-    .cloud:after {
-      top: -20px;
-      left: 80px;
-    }
-
-    @keyframes moveClouds {
-      0% {
-        left: -200px;
-      }
-      100% {
-        left: 100%;
-      }
-    }
-
     .hero-text {
       font-size: 4rem;
       color: white;
@@ -104,17 +58,56 @@
       text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
       z-index: 2;
       padding: 2rem;
-      animation: fadeBounce 2s ease-out;
+      animation: popIn 1.8s ease-out forwards;
+      opacity: 0;
     }
 
-    @keyframes fadeBounce {
+    @keyframes popIn {
       0% {
-        transform: translateY(30px);
+        transform: scale(0.8);
         opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .quote-bubble {
+      position: absolute;
+      top: 15%;
+      right: 10%;
+      background-color: #ffedf5;
+      border-radius: 25px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-size: 1rem;
+      color: #ff5f99;
+      animation: bounceQuote 4s ease-in-out infinite;
+    }
+
+    @keyframes bounceQuote {
+      0%, 100% {
+        transform: translateY(0);
       }
       50% {
         transform: translateY(-10px);
-        opacity: 1;
+      }
+    }
+
+    .floating-icon {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.7;
+      animation: floatIcon 8s infinite ease-in-out;
+    }
+
+    @keyframes floatIcon {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
       }
       100% {
         transform: translateY(0);
@@ -122,7 +115,7 @@
     }
 
     .curve-up {
-      position: absolute;
+      position: relative;
       bottom: 0;
       width: 100%;
       overflow: hidden;
@@ -142,6 +135,8 @@
       opacity: 0;
       transform: translateY(50px);
       transition: opacity 1.2s ease, transform 1.2s ease;
+      position: relative;
+      z-index: 2;
     }
 
     .mission-section.show {
@@ -229,51 +224,47 @@
       }
     }
 
-    /* Decorative sparkles */
-    .sparkle {
-      position: absolute;
-      font-size: 1rem;
-      color: #ffc0cb;
-      animation: twinkle 3s infinite ease-in-out;
+    /* Confetti hearts */
+    .heart {
+      position: fixed;
+      top: -10px;
+      font-size: 1.2rem;
+      color: #ff5f99;
+      animation: fall 10s linear infinite;
     }
 
-    @keyframes twinkle {
-      0%, 100% {
-        opacity: 0.3;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 1;
-        transform: scale(1.3);
-      }
+    @keyframes fall {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(120vh); }
     }
+
   </style>
 </head>
 <body>
 
-  <!-- Floating Hearts -->
-  <div class="floating-heart" style="left: 10%; animation-delay: 0s;"></div>
-  <div class="floating-heart" style="left: 25%; animation-delay: 1s;"></div>
-  <div class="floating-heart" style="left: 50%; animation-delay: 2s;"></div>
-  <div class="floating-heart" style="left: 70%; animation-delay: 3s;"></div>
-  <div class="floating-heart" style="left: 90%; animation-delay: 4s;"></div>
+  <!-- Floating Decorations -->
+  <div class="quote-bubble">"Spread love daily!"</div>
+  <div class="floating-icon" style="top: 100px; left: 40px;">🌸</div>
+  <div class="floating-icon" style="top: 300px; right: 60px;">⭐</div>
+  <div class="floating-icon" style="bottom: 180px; left: 100px;">🌟</div>
 
-  <!-- Decorative Sparkles -->
-  <div class="sparkle" style="top: 80px; left: 40px;">✨</div>
-  <div class="sparkle" style="top: 200px; right: 60px;">⭐</div>
-  <div class="sparkle" style="bottom: 180px; left: 100px;">🌟</div>
+  <!-- Falling Hearts -->
+  <div class="heart" style="left: 10%; animation-delay: 0s;">💗</div>
+  <div class="heart" style="left: 30%; animation-delay: 2s;">💖</div>
+  <div class="heart" style="left: 50%; animation-delay: 4s;">💞</div>
+  <div class="heart" style="left: 70%; animation-delay: 6s;">💕</div>
+  <div class="heart" style="left: 90%; animation-delay: 8s;">💘</div>
 
   <!-- Hero Section -->
   <header class="hero-section">
-    <div class="cloud" style="top: 50px; left: 0;"></div>
-    <div class="cloud" style="top: 120px; left: 200px;"></div>
     <h1 class="hero-text">Welcome to Quotivate</h1>
-    <div class="curve-up">
-      <svg viewBox="0 0 1440 320">
-        <path fill="#fff0f5" d="M0,288 C360,200 1080,400 1440,320 L1440,320 L0,320 Z"></path>
-      </svg>
-    </div>
   </header>
+
+  <div class="curve-up">
+    <svg viewBox="0 0 1440 320">
+      <path fill="#fff0f5" d="M0,288 C360,200 1080,400 1440,320 L1440,320 L0,320 Z"></path>
+    </svg>
+  </div>
 
   <!-- Mission Section -->
   <section class="mission-section">
@@ -302,5 +293,4 @@
     });
   </script>
 
-</body>
-</html>
+</body
