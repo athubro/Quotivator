@@ -118,50 +118,48 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="shared.html">Shared Quotes</a></li>
           <li><a href="about.html">Submit a Quote</a></li>
-          <li><a href="login.html">Login</a></li>
+		  <li><a href="login.html">Login</a></li>
         </ul>
       </div>
     </nav>
 
     <div class="container">
-    <!-- Random Quote Flip Box -->
-	<div class="random-quote-block text-center">
-	  <h2 class="bubbly-header">Random Quote</h2>
-	  <div class="flip-container">
-	    <div class="block__main block__front quote-box">
-	      <span class="quote">
-	        <i class="fas fa-2x fa-quote-left"></i>
-	        <span class="text">Quote To be Displayed Here</span>
-	      </span>
-	      <div class="author">Author to be Displayed Here</div>
-	      <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-	      <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-	    </div>
-	    <div class="block__main block__back quote-box">
-	      <span class="quote">
-	        <i class="fas fa-2x fa-quote-left"></i>
-	        <span class="text">Quote To be Displayed Here</span>
-	      </span>
-	      <div class="author">Author to be Displayed Here</div>
-	      <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
-	      <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-	    </div>
-	  </div>
-	</div>
-	
-	<!-- Daily Quote Box -->
-	<div class="block text-center daily-quote-block">
-	  <h2 class="bubbly-header">Daily Quote</h2>
-	  <div class="quote-box block__main">
-	    <span class="quote">
-	      <i class="fas fa-2x fa-quote-left"></i>
-	      <span class="text">Daily Quote To be Displayed Here</span>
-	    </span>
-	    <div class="author">Author to be Displayed Here</div>
-	    <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
-	  </div>
-	</div>
+      <!-- Random Quote Box -->
+      <div class="block text-center random-quote-block">
+        <h2>Random Quote</h2>
+        <div class="quote-box block__main block__front">
+          <span class="quote">
+            <i class="fas fa-2x fa-quote-left"></i>
+            <span class="text">Quote To be Displayed Here</span>
+          </span>
+          <div class="author">Author to be Displayed Here</div>
+          <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
+          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
+        </div>
+        <div class="quote-box block__main block__back">
+          <span class="quote">
+            <i class="fas fa-2x fa-quote-left"></i>
+            <span class="text">Quote To be Displayed Here</span>
+          </span>
+          <div class="author">Author to be Displayed Here</div>
+          <a class="new-quote btn btn-default" onclick="newQuote()">New Quote</a>
+          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
+        </div>
+      </div>
 
+      <!-- Daily Quote Box -->
+      <div class="block text-center daily-quote-block">
+        <h2>Daily Quote</h2>
+        <div class="quote-box block__main">
+          <span class="quote">
+            <i class="fas fa-2x fa-quote-left"></i>
+            <span class="text">Daily Quote To be Displayed Here</span>
+          </span>
+          <div class="author">Author to be Displayed Here</div>
+          <a class="tweet-quote btn btn-default" href="#" target="_blank">Tweet</a>
+        </div>
+      </div>
+    </div>
   
     <!-- Linking Your JavaScript File -->
     <script src="script.js"></script>
