@@ -8,12 +8,11 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet" />
 
-  <!-- External CSS for future styles -->
+  <!-- External CSS for future use -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Embedded CSS -->
+  <!-- Internal CSS -->
   <style>
-    /* Reset and base styles */
     * {
       margin: 0;
       padding: 0;
@@ -27,50 +26,48 @@
       scroll-behavior: smooth;
     }
 
-    /* Hero Section */
     .hero-section {
       position: relative;
       height: 90vh;
-      overflow: hidden;
-    }
-
-    .hero-image {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      background-image: url('https://t4.ftcdn.net/jpg/02/75/71/89/360_F_275718943_ORKB0mXTEoa3YuKB0Ng8hBJPmB5JXxFl.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .arc {
+    .curve-up {
       position: absolute;
-      bottom: -1px;
-      left: 0;
+      bottom: 0;
       width: 100%;
-      height: 100px;
-      background-color: #fff0f5;
-      border-top-left-radius: 100% 40px;
-      border-top-right-radius: 100% 40px;
-      z-index: 2;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .curve-up svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 120px;
     }
 
     .hero-text {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
       font-size: 3rem;
       color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      z-index: 3;
       text-align: center;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+      z-index: 2;
     }
 
-    /* Mission Section Fade-in */
     .mission-section {
-      padding: 5rem 2rem;
+      padding: 5rem 2rem 3rem;
       text-align: center;
       opacity: 0;
       transform: translateY(50px);
       transition: opacity 1s ease, transform 1s ease;
+      background-color: #fff0f5;
     }
 
     .mission-section.show {
@@ -83,28 +80,42 @@
       margin: 0 auto;
       font-size: 1.3rem;
     }
+
+    .quotes-button {
+      margin-top: 3rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background-color: #ff77aa;
+      border: none;
+      border-radius: 50px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .quotes-button.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .quotes-button:hover {
+      background-color: #ff5f99;
+    }
   </style>
 </head>
 <body>
 
   <!-- Hero Section -->
-  <nav class="navbar">
-      <div class="navbar-content">
-        <h1 class="navbar-title">quotivate</h1>
-        <ul class="navbar-links">
-          <li><a href="home.html">Home</a></li>
-          <li><a href="index.html">Quotes</a></li>
-          <li><a href="shared.html">Shared Quotes</a></li>
-          <li><a href="about.html">Submit a Quote</a></li>
-	  <li><a href="login.html">Login</a></li>
-        </ul>
-      </div>
-    </nav>
-
   <header class="hero-section">
-    <img src="https://c1.wallpaperflare.com/preview/536/981/133/inspiration-motivation-life-inspirational.jpg" alt="Motivational Image" class="hero-image" />
-    <div class="arc"></div>
     <h1 class="hero-text">Welcome to Quotivate</h1>
+    <div class="curve-up">
+      <!-- Upward Arc using SVG -->
+      <svg viewBox="0 0 1440 320">
+        <path fill="#fff0f5" d="M0,288 C360,200 1080,400 1440,320 L1440,320 L0,320 Z"></path>
+      </svg>
+    </div>
   </header>
 
   <!-- Mission Section -->
@@ -117,16 +128,19 @@
         Simple, motivating, and built for you.
       </p>
     </div>
+    <button class="quotes-button" onclick="location.href='index.html'">Quotes</button>
   </section>
 
-  <!-- Scroll-triggered fade in -->
+  <!-- Scroll-triggered animation -->
   <script>
     window.addEventListener('scroll', () => {
       const mission = document.querySelector('.mission-section');
+      const button = document.querySelector('.quotes-button');
       const triggerPoint = window.innerHeight / 1.2;
 
       if (mission.getBoundingClientRect().top < triggerPoint) {
         mission.classList.add('show');
+        button.classList.add('show');
       }
     });
   </script>
