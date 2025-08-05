@@ -16,7 +16,7 @@ body {
 /* Navbar */
 .navbar {
     position: fixed;
-    top: 0;
+    top: -2rem;
     width: 100%;
     background-color: #ffb6c1;
     box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
@@ -43,16 +43,20 @@ body {
     padding: 0.5rem 1rem;
     color: #ff1493;
     text-shadow: 1px 1px #fff;
+    
 }
 
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
+    
+    font-size: 18px;
+    margin-bottom: -2rem;
 }
 
 .navbar-links a {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: #ff1493;
     text-decoration: none;
@@ -83,7 +87,7 @@ body {
 
 /* Flip animation */
 .random-quote-block {
-    margin-bottom: 30rem;
+    margin-bottom: 25rem;
     position: relative;
     perspective: 150rem;
     width: 100%;
@@ -271,4 +275,12 @@ body {
     font-size: 16px;
     color: #8b008b;
     margin: 0;
+}
+.random-quote-block h2,
+.daily-quote-block h2 {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 32px;
+    color: #ff1493;
+    text-align: center;
+    margin-bottom: 1rem;
 }
