@@ -5,17 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Patrick+Hand&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     html, body {
-      font-family: 'Rubik Bubbles', cursive;
+      font-family: 'Patrick Hand', cursive;
       background: linear-gradient(to bottom right, #ffd6e8, #ffeaf4);
       color: #333;
     }
 
+    h1, h2, .hero-text {
+      font-family: 'Rubik Bubbles', cursive;
+    }
+
     .w3-bar {
-      background-color: #ff99c8 !important;
+      background-color: #ff4fc4 !important; /* electric pink */
     }
 
     .hero-section {
@@ -41,16 +45,17 @@
       display: block;
       width: 100%;
       height: 100px;
-      margin-top: -6.5rem;
+      margin-bottom: -6.5rem
     }
 
     .w3-button.pink {
-      background-color: #ff77aa;
+      background-color: #ff4fc4; /* electric pink */
       color: white;
+      font-family: 'Patrick Hand', cursive;
     }
 
     .w3-button.pink:hover {
-      background-color: #ff5f99;
+      background-color: #e039a6;
     }
 
     .decorative {
@@ -64,6 +69,9 @@
 
 <!-- Navbar -->
 <div class="w3-bar w3-top w3-large w3-padding">
+  <a href="#home" class="w3-bar-item w3-button w3-hover-white"><i class="fa fa-home"></i> Home</a>
+  <a href="#mission" class="w3-bar-item w3-button w3-hover-white"><i class="fa fa-heart"></i> Mission</a>
+  <a href="quotes.html" class="w3-bar-item w3-button w3-hover-white"><i class="fa fa-quote-left"></i> Quotes</a>
 </div>
 
 <!-- Hero Section -->
@@ -90,7 +98,7 @@
     Quotivate is focused on positivity, creativity, and daily inspiration — not chaos.<br>
     Simple, motivating, and built for you.
   </p>
-  <a href="quotes.html" class="w3-button pink w3-margin-top">Get Inspired</a>
+  <a href="index.html" class="w3-button pink w3-margin-top">Get Inspired</a>
 </section>
 
 <!-- Decorative Section -->
@@ -101,7 +109,7 @@
 </div>
 
 <!-- Footer -->
-<footer class="w3-center w3-padding-32" style="background-color: #ffb6c1;">
+<footer class="w3-center w3-padding-32" style="background-color: #ff4fc4; color: white;">
   <p>Made with 💕 by Quotivate Team</p>
 </footer>
 
