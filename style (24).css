@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Existing desktop styles remain unchanged above this line */
+
+/* 📱 Mobile Styles (strict max-width) */
+@media screen and (max-width: 600px) {
+  .navbar-content,
+  .footer-content,
+  .container,
+  .container-shared,
+  .quote-box,
+  .quote-form,
+  .alert-success {
+    max-width: 95vw;
+    width: 95vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .navbar-title {
+    font-size: 20px;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar-links li {
+    margin: 8px 0;
+  }
+
+  .text {
+    font-size: 20px;
+    padding: 0 10px;
+  }
+
+  .author {
+    font-size: 14px;
+  }
+
+  .new-quote,
+  .tweet-quote,
+  .submit-quote,
+  .upvote-btn {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .quote-box {
+    padding: 1rem;
+  }
+
+  .quote-form {
+    padding: 1rem;
+  }
+
+  .random-quote-block {
+    margin-bottom: 18rem;
+  }
+}
+
+/* 🔄 Adjustments for Orientation (only on small devices) */
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .quote-box {
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 600px) and (orientation: landscape) {
+  .quote-box {
+    width: 90%;
+    font-size: 12px;
+  }
+
+  .text {
+    font-size: 18px;
+  }
+
+  .author {
+    font-size: 13px;
+  }
+}
