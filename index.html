@@ -81,6 +81,20 @@
 		  const app = initializeApp(firebaseConfig);
 		  const analytics = getAnalytics(app);
 		</script>
+<script>
+    // Function to detect if it's a mobile device
+    function isMobileDevice() {
+      return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    // Create a new <link> element for the stylesheet
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = isMobileDevice() ? 'mobile.css' : 'style.css';
+
+    // Add the <link> to the <head>
+    document.head.appendChild(link);
+  </script>
 <html>
   <head>
     <!-- Loading The Bootstrap Library -->
