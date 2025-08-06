@@ -161,10 +161,10 @@ function newQuote() {
         .then(quoteData => displayRandomQuote(quoteData))
         .catch(error => {
             console.error("Error fetching quotes:", error);
-            textFront.innerHTML = "Failed to load quotes";
-            authorFront.innerHTML = "Error";
-            textBack.innerHTML = "Failed to load quotes";
-            authorBack.innerHTML = "Error";
+            textFront.innerHTML = "Go to api.quotable.io to enable";
+            authorFront.innerHTML = "thanks";
+            textBack.innerHTML = "Go to api.quotable.io to enable";
+            authorBack.innerHTML = "atharva bengeri";
             tweetFront.href = "#";
             tweetBack.href = "#";
         });
