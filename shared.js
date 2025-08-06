@@ -68,7 +68,6 @@ async function loadQuotes(user) {
       const quoteBox = document.createElement("div");
       quoteBox.className = "quote-box shared-quote";
       const upvotes = quote.upvotes || 0;
-
       const comments = quote.comments || [];
 
       quoteBox.innerHTML = `
@@ -90,7 +89,6 @@ async function loadQuotes(user) {
           </div>
           ${user ? `
             <input type="text" class="comment-input" placeholder="Add a comment..." />
-            <button class="submit-comment" data-id="${quote.id}">Post</button>
           ` : `<div class="login-comment-msg">Login to comment</div>`}
         </div>
       `;
@@ -122,32 +120,33 @@ async function loadQuotes(user) {
       });
     });
 
-    // Handle comments
-    document.querySelectorAll(".submit-comment").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const quoteId = btn.dataset.id;
-        const container = document.getElementById(`comments-${quoteId}`);
-        const input = container.querySelector(".comment-input");
-        const commentText = input.value.trim();
-        if (!commentText) return;
+    // Handle comments on Enter key
+    document.querySelectorAll(".comment-input").forEach((inputEl) => {
+      inputEl.addEventListener("keydown", async (e) => {
+        if (e.key === "Enter") {
+          const quoteId = inputEl.closest(".comment-section").id.replace("comments-", "");
+          const commentText = inputEl.value.trim();
+          if (!commentText) return;
 
-        try {
-          const ref = doc(db, "quotes", quoteId);
-          await updateDoc(ref, {
-            comments: arrayUnion({
-              text: commentText,
-              user: user.displayName || "Anonymous",
-              timestamp: Date.now()
-            })
-          });
+          try {
+            const ref = doc(db, "quotes", quoteId);
+            await updateDoc(ref, {
+              comments: arrayUnion({
+                text: commentText,
+                user: user.displayName || "Anonymous",
+                timestamp: Date.now()
+              })
+            });
 
-          input.value = "";
-          loadQuotes(user); // Refresh quotes to show new comment
-        } catch (err) {
-          console.error("Failed to add comment:", err);
+            inputEl.value = "";
+            loadQuotes(user); // Refresh quotes to show new comment
+          } catch (err) {
+            console.error("Failed to add comment:", err);
+          }
         }
       });
     });
+
   } catch (error) {
     console.error("Error loading quotes:", error);
   }
