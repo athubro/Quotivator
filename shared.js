@@ -6,9 +6,15 @@ import {
   doc,
   updateDoc,
   increment,
+  arrayUnion,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Firebase config (same as before)
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
   authDomain: "quoteapp-e57e7.firebaseapp.com",
@@ -21,6 +27,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
 function getVotedList() {
   return JSON.parse(localStorage.getItem("votedQuotes") || "[]");
 }
@@ -33,7 +41,7 @@ function addVotedId(id) {
   }
 }
 
-async function loadQuotes() {
+async function loadQuotes(user) {
   const quotesContainer = document.getElementById("shared-quotes");
   if (!quotesContainer) return;
 
@@ -50,21 +58,18 @@ async function loadQuotes() {
 
     quotes.sort((a, b) => {
       if ((b.upvotes || 0) !== (a.upvotes || 0)) {
-        // Sort by upvotes descending
         return (b.upvotes || 0) - (a.upvotes || 0);
       } else {
-        // If upvotes are equal, sort by timestamp descending (newer first)
         return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0);
       }
     });
 
-
     quotes.forEach((quote) => {
       const quoteBox = document.createElement("div");
       quoteBox.className = "quote-box shared-quote";
-
-      // Use upvotes or 0 if undefined
       const upvotes = quote.upvotes || 0;
+
+      const comments = quote.comments || [];
 
       quoteBox.innerHTML = `
         <div class="text">“${quote.quote}”</div>
@@ -74,23 +79,37 @@ async function loadQuotes() {
             Upvote <span class="upvote-count">${upvotes}</span>
           </button>
         </div>
+        <div class="comment-section" id="comments-${quote.id}">
+          <h5>Comments</h5>
+          <div class="comments-list">
+            ${comments.map(comment => `
+              <div class="comment">
+                <strong>${comment.user || "Anonymous"}:</strong> ${comment.text}
+              </div>
+            `).join('')}
+          </div>
+          ${user ? `
+            <input type="text" class="comment-input" placeholder="Add a comment..." />
+            <button class="submit-comment" data-id="${quote.id}">Post</button>
+          ` : `<div class="login-comment-msg">Login to comment</div>`}
+        </div>
       `;
 
       quotesContainer.appendChild(quoteBox);
     });
 
-    // Add upvote handlers that update Firestore
-    document.querySelectorAll(".upvote-btn").forEach(btn => {
+    // Handle upvotes
+    document.querySelectorAll(".upvote-btn").forEach((btn) => {
       const id = btn.dataset.id;
       if (getVotedList().includes(id)) {
         btn.disabled = true;
       }
-    
+
       btn.addEventListener("click", async () => {
         btn.disabled = true;
         addVotedId(id);
         const countSpan = btn.querySelector(".upvote-count");
-    
+
         try {
           const ref = doc(db, "quotes", id);
           await updateDoc(ref, { upvotes: increment(1) });
@@ -102,9 +121,43 @@ async function loadQuotes() {
         }
       });
     });
+
+    // Handle comments
+    document.querySelectorAll(".submit-comment").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const quoteId = btn.dataset.id;
+        const container = document.getElementById(`comments-${quoteId}`);
+        const input = container.querySelector(".comment-input");
+        const commentText = input.value.trim();
+        if (!commentText) return;
+
+        try {
+          const ref = doc(db, "quotes", quoteId);
+          await updateDoc(ref, {
+            comments: arrayUnion({
+              text: commentText,
+              user: user.displayName || "Anonymous",
+              timestamp: Date.now()
+            })
+          });
+
+          input.value = "";
+          loadQuotes(user); // Refresh quotes to show new comment
+        } catch (err) {
+          console.error("Failed to add comment:", err);
+        }
+      });
+    });
   } catch (error) {
     console.error("Error loading quotes:", error);
   }
 }
 
-loadQuotes();
+// 🔐 Protect page (redirect to login.html if not logged in)
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  } else {
+    loadQuotes(user);
+  }
+});
