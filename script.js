@@ -118,7 +118,7 @@ fetch("https://api.quotable.io/random")
     .then(quoteData => displayRandomQuote(quoteData))
     .catch(error => {
         console.error("Error fetching random quote:", error);
-        textFront.innerHTML = "Go to api.quotable.io to enable";
+        textFront.innerHTML = "Go to api.quotable.io to enable, (this site is safe)";
         authorFront.innerHTML = "Atharva Bengeri";
         textBack.innerHTML = "Go to api.quotable.io to enable";
         authorBack.innerHTML = "Thanks";
@@ -142,8 +142,8 @@ if (storedQuote) {
         })
         .catch(error => {
             console.error("Error fetching daily quote:", error);
-            dailyText.innerHTML = "Failed to load daily quote";
-            dailyAuthor.innerHTML = "Error";
+            dailyText.innerHTML = "I am currently working on bypassing this step";
+            dailyAuthor.innerHTML = <a href="api.quotable.io">Go Here</a>;
             dailyTweet.href = "#";
         });
 }
