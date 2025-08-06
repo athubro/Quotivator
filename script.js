@@ -110,7 +110,7 @@ const saveDailyQuote = (quoteData) => {
 };
 
 // Fetching a random quote for the random quote box
-fetch("https://api.quotable.io/random")
+fetch("/api/quotes/random")
     .then(response => {
         if (!response.ok) throw new Error("Failed to fetch quote");
         return response.json();
@@ -131,7 +131,7 @@ const storedQuote = getStoredDailyQuote();
 if (storedQuote) {
     displayDailyQuote(storedQuote);
 } else {
-    fetch(`https://api.quotable.io/random?seed=${getDailySeed()}`)
+    fetch(`/api/quotes/random?seed=${getDailySeed()}`)
         .then(response => {
             if (!response.ok) throw new Error("Failed to fetch daily quote");
             return response.json();
@@ -153,7 +153,7 @@ function newQuote() {
     blockBack.classList.toggle('rotateB');
     blockFront.classList.toggle('rotateF');
 
-    fetch("https://api.quotable.io/random")
+    fetch("/api/quotes/random")
         .then(response => {
             if (!response.ok) throw new Error("Failed to fetch quote");
             return response.json();
