@@ -143,7 +143,7 @@ if (storedQuote) {
         .catch(error => {
             console.error("Error fetching daily quote:", error);
             dailyText.innerHTML = "I am currently working on bypassing this step";
-            dailyAuthor.innerHTML = <a href="api.quotable.io">Go Here</a>;
+            dailyAuthor.innerHTML = "Thank you";
             dailyTweet.href = "#";
         });
 }
