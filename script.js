@@ -118,10 +118,10 @@ fetch("https://api.quotable.io/random")
     .then(quoteData => displayRandomQuote(quoteData))
     .catch(error => {
         console.error("Error fetching random quote:", error);
-        textFront.innerHTML = "Failed to load quotes";
-        authorFront.innerHTML = "Error";
-        textBack.innerHTML = "Failed to load quotes";
-        authorBack.innerHTML = "Error";
+        textFront.innerHTML = "Go to api.quotable.io to enable";
+        authorFront.innerHTML = "Atharva Bengeri";
+        textBack.innerHTML = "Go to api.quotable.io to enable";
+        authorBack.innerHTML = "Thanks";
         tweetFront.href = "#";
         tweetBack.href = "#";
     });
