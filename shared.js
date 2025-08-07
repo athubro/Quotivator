@@ -8,7 +8,6 @@ import {
   increment,
   arrayUnion,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
 import {
   getAuth,
   onAuthStateChanged,
@@ -41,11 +40,32 @@ function addVotedId(id) {
   }
 }
 
+// Sorting mode: "upvotes" or "recent"
+let sortMode = "upvotes";
+
+function createSortSwitcher() {
+  const switcher = document.createElement("select");
+  switcher.innerHTML = `
+    <option value="upvotes">Highest Upvotes</option>
+    <option value="recent">Most Recent</option>
+  `;
+  switcher.addEventListener("change", () => {
+    sortMode = switcher.value;
+    onAuthStateChanged(auth, (user) => {
+      if (user) loadQuotes(user);
+    });
+  });
+  return switcher;
+}
+
 async function loadQuotes(user) {
   const quotesContainer = document.getElementById("shared-quotes");
   if (!quotesContainer) return;
 
   quotesContainer.innerHTML = "";
+
+  // Add sorting switcher above quotes
+  quotesContainer.appendChild(createSortSwitcher());
 
   try {
     const quotesSnapshot = await getDocs(collection(db, "quotes"));
@@ -56,36 +76,59 @@ async function loadQuotes(user) {
       quotes.push({ id: docSnap.id, ...data });
     });
 
-    quotes.sort((a, b) => {
-      if ((b.upvotes || 0) !== (a.upvotes || 0)) {
-        return (b.upvotes || 0) - (a.upvotes || 0);
-      } else {
-        return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0);
-      }
-    });
+    // Sorting
+    if (sortMode === "upvotes") {
+      quotes.sort((a, b) => {
+        if ((b.upvotes || 0) !== (a.upvotes || 0)) {
+          return (b.upvotes || 0) - (a.upvotes || 0);
+        } else {
+          return (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0);
+        }
+      });
+    } else if (sortMode === "recent") {
+      quotes.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+    }
 
     quotes.forEach((quote) => {
       const quoteBox = document.createElement("div");
       quoteBox.className = "quote-box shared-quote";
       const upvotes = quote.upvotes || 0;
       const comments = quote.comments || [];
+      const quoteDate = quote.timestamp
+        ? new Date(quote.timestamp.seconds * 1000).toLocaleString()
+        : "Unknown date";
+
+      // Comments HTML
+      const commentsHTML = comments
+        .map((comment) => {
+          const commentDate = comment.timestamp
+            ? new Date(comment.timestamp).toLocaleString()
+            : "Unknown date";
+          return `
+            <div class="comment">
+              <strong>${comment.user || "Anonymous"}:</strong> ${comment.text}
+              <div class="comment-date">${commentDate}</div>
+            </div>
+          `;
+        })
+        .join("");
 
       quoteBox.innerHTML = `
         <div class="text">“${quote.quote}”</div>
         <div class="author">– ${quote.author || "Anonymous"}</div>
+        <div class="quote-date">Posted: ${quoteDate}</div>
         <div class="text-center">
           <button class="upvote-btn" data-id="${quote.id}">
             Upvote <span class="upvote-count">${upvotes}</span>
           </button>
         </div>
-        <div class="comment-section" id="comments-${quote.id}">
+        <div>
+          <button class="toggle-comments" data-id="${quote.id}">Show Comments (${comments.length})</button>
+        </div>
+        <div class="comment-section" id="comments-${quote.id}" style="display:none;">
           <h5>Comments</h5>
           <div class="comments-list">
-            ${comments.map(comment => `
-              <div class="comment">
-                <strong>${comment.user || "Anonymous"}:</strong> ${comment.text}
-              </div>
-            `).join('')}
+            ${commentsHTML}
           </div>
           ${user ? `
             <input type="text" class="comment-input" placeholder="Add a comment..." />
@@ -120,7 +163,21 @@ async function loadQuotes(user) {
       });
     });
 
-    // Handle comments on Enter key
+    // Handle comments toggle
+    document.querySelectorAll(".toggle-comments").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const commentsEl = document.getElementById(`comments-${btn.dataset.id}`);
+        if (commentsEl.style.display === "none") {
+          commentsEl.style.display = "block";
+          btn.textContent = "Hide Comments";
+        } else {
+          commentsEl.style.display = "none";
+          btn.textContent = `Show Comments (${commentsEl.querySelectorAll(".comment").length})`;
+        }
+      });
+    });
+
+    // Handle comments input
     document.querySelectorAll(".comment-input").forEach((inputEl) => {
       inputEl.addEventListener("keydown", async (e) => {
         if (e.key === "Enter") {
@@ -134,8 +191,8 @@ async function loadQuotes(user) {
               comments: arrayUnion({
                 text: commentText,
                 user: user.displayName || "Anonymous",
-                timestamp: Date.now()
-              })
+                timestamp: Date.now(),
+              }),
             });
 
             inputEl.value = "";
@@ -146,13 +203,12 @@ async function loadQuotes(user) {
         }
       });
     });
-
   } catch (error) {
     console.error("Error loading quotes:", error);
   }
 }
 
-// 🔐 Protect page (redirect to login.html if not logged in)
+// 🔐 Protect page
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "login.html";
