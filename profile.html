@@ -1,141 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Profile - Quotivate</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap">
-  <style>
-    body {
-      font-family: 'Patrick Hand', cursive;
-      background-color: #ffe6f0;
-      color: #333;
-      padding: 20px;
-    }
-    h1, h2 {
-      color: #ff66b2;
-    }
-    .card {
-      background: #fff0f5;
-      border-radius: 15px;
-      padding: 15px;
-      margin: 15px 0;
-      box-shadow: 0 4px 6px rgba(255, 105, 180, 0.1);
-    }
-    .meta {
-      font-size: 14px;
-      color: #888;
-    }
-    .login-btn {
-      background-color: #ff66b2;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Your Quotivate Profile</h1>
-  <div id="authStatus"></div>
-  <div id="quoteSection">
-    <h2>Your Submitted Quotes</h2>
-    <div id="your-quotes"></div>
-  </div>
-  <div id="commentSection">
-    <h2>Your Submitted Comments</h2>
-    <div id="your-comments"></div>
-  </div>
-  <div id="commentsOnQuotesSection">
-    <h2>Comments on Your Quotes</h2>
-    <div id="comments-on-your-quotes"></div>
-  </div>
+function displayQuotes(quotes) {
+  quoteList.innerHTML = "";
+  if (quotes.length === 0) {
+    quoteList.innerHTML = "<p>You haven't submitted any quotes yet.</p>";
+    return;
+  }
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+  quotes.forEach((quote) => {
+    const box = document.createElement("div");
+    box.className = "quote-box";
+    
+    const timestamp = quote.timestamp ? new Date(quote.timestamp).toLocaleString() : "Unknown date";
+    const upvotes = quote.upvotes || 0;
+    const comments = quote.comments || [];
 
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth();
-
-    onAuthStateChanged(auth, async (user) => {
-      const authStatus = document.getElementById("authStatus");
-      if (!user) {
-        authStatus.innerHTML = `<p>You are not logged in.</p><a class="login-btn" href="login.html">Go to Login</a>`;
-        return;
-      } else {
-        authStatus.innerHTML = `<p>Welcome, ${user.displayName || user.email}</p>`;
-      }
-
-      const uid = user.uid;
-
-      const quotesSnapshot = await getDocs(collection(db, "quotes"));
-      const yourQuotes = [];
-      const yourQuoteIDs = new Set();
-
-      quotesSnapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.authorId === uid) {
-          yourQuotes.push({ id: doc.id, ...data });
-          yourQuoteIDs.add(doc.id);
-        }
+    let commentsHTML = "";
+    if (comments.length > 0) {
+      commentsHTML = "<ul>";
+      comments.forEach((c) => {
+        commentsHTML += `<li><strong>${c.commenter}</strong> (${new Date(c.timestamp).toLocaleString()}): ${c.text}</li>`;
       });
+      commentsHTML += "</ul>";
+    } else {
+      commentsHTML = "<p>No comments yet.</p>";
+    }
 
-      yourQuotes.forEach(q => {
-        document.getElementById("your-quotes").innerHTML += `
-          <div class="card">
-            <p>"${q.text}"</p>
-            <p class="meta">Upvotes: ${q.upvotes || 0} | ${new Date(q.timestamp?.seconds * 1000).toLocaleString()}</p>
-          </div>
-        `;
-      });
+    box.innerHTML = `
+      <div class="quote-text">“${quote.quote}”</div>
+      <div class="quote-author">– ${quote.author || "Anonymous"}</div>
+      <p><strong>Posted:</strong> ${timestamp}</p>
+      <p><strong>Upvotes:</strong> ${upvotes}</p>
+      <div><strong>Comments:</strong> ${commentsHTML}</div>
+    `;
 
-      const commentsSnapshot = await getDocs(collection(db, "comments"));
-      const yourComments = [];
-      const commentsOnYourQuotes = [];
-
-      commentsSnapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.userId === uid) {
-          yourComments.push(data);
-        }
-        if (yourQuoteIDs.has(data.quoteId)) {
-          commentsOnYourQuotes.push(data);
-        }
-      });
-
-      yourComments.forEach(c => {
-        document.getElementById("your-comments").innerHTML += `
-          <div class="card">
-            <p>${c.text}</p>
-            <p class="meta">On Quote ID: ${c.quoteId} | ${new Date(c.timestamp?.seconds * 1000).toLocaleString()}</p>
-          </div>
-        `;
-      });
-
-      commentsOnYourQuotes.forEach(c => {
-        document.getElementById("comments-on-your-quotes").innerHTML += `
-          <div class="card">
-            <p>${c.text}</p>
-            <p class="meta">From: ${c.userName || "Anonymous"} | ${new Date(c.timestamp?.seconds * 1000).toLocaleString()}</p>
-          </div>
-        `;
-      });
-    });
-  </script>
-</body>
-</html>
-
+    quoteList.appendChild(box);
+  });
+}
