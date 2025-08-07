@@ -3,73 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Quotivate Profile</title>
+  <title>Your Profile - Quotivate</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap">
   <style>
     body {
       font-family: 'Patrick Hand', cursive;
-      background-color: #fff0f5;
+      background-color: #ffe6f0;
+      color: #333;
       padding: 20px;
     }
-    h2 {
+    h1, h2 {
       color: #ff66b2;
     }
     .card {
-      background: #fff;
+      background: #fff0f5;
       border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(255, 105, 180, 0.2);
       padding: 15px;
       margin: 15px 0;
+      box-shadow: 0 4px 6px rgba(255, 105, 180, 0.1);
     }
     .meta {
       font-size: 14px;
       color: #888;
     }
-    .section {
-      margin-top: 30px;
+    .login-btn {
+      background-color: #ff66b2;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
-      <div class="navbar-content">
-        <h1 class="navbar-title">quotivate</h1>
-        <ul class="navbar-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="quotes.html">Quotes</a></li>
-          <li><a href="shared.html">Shared Quotes</a></li>
-          <li><a href="about.html">Submit a Quote</a></li>
-		  <li><a href="login.html">Login</a></li>
-        </ul>
-      </div>
-    </nav>
-
-
-  <h1>Welcome, <span id="username">User</span></h1>
-
-  <div class="section">
+  <h1>Your Quotivate Profile</h1>
+  <div id="authStatus"></div>
+  <div id="quoteSection">
     <h2>Your Submitted Quotes</h2>
-    <div id="user-quotes"></div>
+    <div id="your-quotes"></div>
   </div>
-
-  <div class="section">
-    <h2>Comments You Submitted</h2>
-    <div id="user-comments"></div>
+  <div id="commentSection">
+    <h2>Your Submitted Comments</h2>
+    <div id="your-comments"></div>
   </div>
-
-  <div class="section">
+  <div id="commentsOnQuotesSection">
     <h2>Comments on Your Quotes</h2>
-    <div id="comments-on-quotes"></div>
+    <div id="comments-on-your-quotes"></div>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore, collection, query, where, getDocs, doc, getDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import {
-      getAuth, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
@@ -82,89 +69,73 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    function formatDate(seconds) {
-      const date = new Date(seconds * 1000);
-      return date.toLocaleString();
-    }
+    const auth = getAuth();
 
     onAuthStateChanged(auth, async (user) => {
+      const authStatus = document.getElementById("authStatus");
       if (!user) {
-        window.location.href = "login.html";
+        authStatus.innerHTML = `<p>You are not logged in.</p><a class="login-btn" href="login.html">Go to Login</a>`;
         return;
+      } else {
+        authStatus.innerHTML = `<p>Welcome, ${user.displayName || user.email}</p>`;
       }
 
-      document.getElementById("username").textContent = user.displayName || user.email;
+      const uid = user.uid;
 
-      const quotesSnap = await getDocs(collection(db, "quotes"));
-      const commentsSnap = await getDocs(collection(db, "comments"));
+      const quotesSnapshot = await getDocs(collection(db, "quotes"));
+      const yourQuotes = [];
+      const yourQuoteIDs = new Set();
 
-      const userQuotes = [];
-      const commentsYouSubmitted = [];
+      quotesSnapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.authorId === uid) {
+          yourQuotes.push({ id: doc.id, ...data });
+          yourQuoteIDs.add(doc.id);
+        }
+      });
+
+      yourQuotes.forEach(q => {
+        document.getElementById("your-quotes").innerHTML += `
+          <div class="card">
+            <p>"${q.text}"</p>
+            <p class="meta">Upvotes: ${q.upvotes || 0} | ${new Date(q.timestamp?.seconds * 1000).toLocaleString()}</p>
+          </div>
+        `;
+      });
+
+      const commentsSnapshot = await getDocs(collection(db, "comments"));
+      const yourComments = [];
       const commentsOnYourQuotes = [];
 
-      quotesSnap.forEach(docSnap => {
-        const data = docSnap.data();
-        const quoteId = docSnap.id;
-        if (data.author === user.displayName || data.author === user.email) {
-          userQuotes.push({ id: quoteId, ...data });
-
-          // Find comments on this quote
-          commentsSnap.forEach(commentSnap => {
-            const c = commentSnap.data();
-            if (c.quoteId === quoteId && c.author !== data.author) {
-              commentsOnYourQuotes.push({ ...c });
-            }
-          });
+      commentsSnapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.userId === uid) {
+          yourComments.push(data);
+        }
+        if (yourQuoteIDs.has(data.quoteId)) {
+          commentsOnYourQuotes.push(data);
         }
       });
 
-      commentsSnap.forEach(commentSnap => {
-        const c = commentSnap.data();
-        if (c.author === user.displayName || c.author === user.email) {
-          commentsYouSubmitted.push(c);
-        }
-      });
-
-      const quotesContainer = document.getElementById("user-quotes");
-      userQuotes.forEach(q => {
-        const el = document.createElement("div");
-        el.className = "card";
-        el.innerHTML = `
-          <p><strong>"${q.text}"</strong></p>
-          <p class="meta">Author: ${q.author}</p>
-          <p class="meta">Upvotes: ${q.upvotes || 0}</p>
-          <p class="meta">Posted: ${formatDate(q.timestamp?.seconds || 0)}</p>
+      yourComments.forEach(c => {
+        document.getElementById("your-comments").innerHTML += `
+          <div class="card">
+            <p>${c.text}</p>
+            <p class="meta">On Quote ID: ${c.quoteId} | ${new Date(c.timestamp?.seconds * 1000).toLocaleString()}</p>
+          </div>
         `;
-        quotesContainer.appendChild(el);
       });
 
-      const yourComments = document.getElementById("user-comments");
-      commentsYouSubmitted.forEach(c => {
-        const el = document.createElement("div");
-        el.className = "card";
-        el.innerHTML = `
-          <p>${c.text}</p>
-          <p class="meta">Commented on quote ID: ${c.quoteId}</p>
-          <p class="meta">At: ${formatDate(c.timestamp?.seconds || 0)}</p>
-        `;
-        yourComments.appendChild(el);
-      });
-
-      const othersComments = document.getElementById("comments-on-quotes");
       commentsOnYourQuotes.forEach(c => {
-        const el = document.createElement("div");
-        el.className = "card";
-        el.innerHTML = `
-          <p>${c.text}</p>
-          <p class="meta">By: ${c.author}</p>
-          <p class="meta">On your quote ID: ${c.quoteId}</p>
-          <p class="meta">At: ${formatDate(c.timestamp?.seconds || 0)}</p>
+        document.getElementById("comments-on-your-quotes").innerHTML += `
+          <div class="card">
+            <p>${c.text}</p>
+            <p class="meta">From: ${c.userName || "Anonymous"} | ${new Date(c.timestamp?.seconds * 1000).toLocaleString()}</p>
+          </div>
         `;
-        othersComments.appendChild(el);
       });
     });
   </script>
 </body>
 </html>
+
