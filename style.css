@@ -387,4 +387,95 @@ body {
   transform: scale(0.98);
   box-shadow: 0 2px 4px rgba(255, 105, 180, 0.2);
 }
+/* === Sort Switcher Dropdown === */
+#shared-quotes select {
+  background-color: #ffb6d5;
+  border: 2px solid #ff80b5;
+  border-radius: 25px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-family: "Rubik", "Patrick Hand", sans-serif;
+  color: #fff;
+  outline: none;
+  margin-bottom: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 128, 181, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+#shared-quotes select:hover {
+  background-color: #ff80b5;
+}
+
+/* === Quote Timestamp === */
+.quote-date {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+/* === Comment Timestamp === */
+.comment-date {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* === Comment Toggle Button === */
+.toggle-comments {
+  background-color: #ffe4f0;
+  border: 2px solid #ff80b5;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ff4d94;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(255, 128, 181, 0.25);
+}
+.toggle-comments:hover {
+  background-color: #ffb6d5;
+  color: white;
+}
+
+/* === Comment Box === */
+.comment-section {
+  background-color: #fff0f7;
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ffb6d5;
+}
+
+/* === Individual Comments === */
+.comment {
+  background-color: #ffffff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 3px rgba(255, 128, 181, 0.15);
+}
+.comment strong {
+  color: #ff4d94;
+}
+
+/* === Comment Input === */
+.comment-input {
+  border-radius: 20px;
+  border: 1px solid #ff80b5;
+  padding: 6px 10px;
+  width: 100%;
+  margin-top: 6px;
+  outline: none;
+  font-size: 13px;
+  font-family: "Rubik", "Patrick Hand", sans-serif;
+}
+.comment-input:focus {
+  border-color: #ff4d94;
+  box-shadow: 0 0 6px rgba(255, 77, 148, 0.3);
+}
+
 
