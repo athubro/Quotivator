@@ -1,40 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your Profile - Quotivate</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="./favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubble&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Patrick Hand", cursive;
+      background: #ffe0f0;
+      padding: 20px;
+    }
+    h1 {
+      font-family: "Rubik Bubble", cursive;
+      color: hotpink;
+      text-align: center;
+    }
+    .quote-box {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin: 15px auto;
+      padding: 15px 20px;
+      max-width: 600px;
+    }
+    .quote-text {
+      font-size: 1.2em;
+      color: #333;
+    }
+    .quote-author {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #555;
+    }
+    .login-redirect {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .login-redirect a {
+      background: hotpink;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="navbar-content">
-      <h1 class="navbar-title">quotivate</h1>
-      <ul class="navbar-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="quotes.html">Quotes</a></li>
-        <li><a href="shared.html">Shared</a></li>
-        <li><a href="about.html">Submit</a></li>
-        <li><a href="login.html">Login</a></li>
-      </ul>
-    </div>
-  </nav>
+  <h1>Your Submitted Quotes</h1>
+  <div id="quote-list"></div>
 
-  <div class="container text-center" id="profile-container">
-    <h2>Loading profile...</h2>
+  <div class="login-redirect" id="login-message" style="display: none;">
+    <p>Please <a href="login.html">login</a> to view your profile.</p>
   </div>
-
-  <footer class="footer">
-    <div class="footer-content">
-      <p>Made by Atharva Bengeri</p>
-    </div>
-  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      setDoc,
+      query,
+      where,
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
@@ -43,83 +78,65 @@
       storageBucket: "quoteapp-e57e7.appspot.com",
       messagingSenderId: "1065813414568",
       appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-      measurementId: "G-XWP863T7K1"
+      measurementId: "G-XWP863T7K1",
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    const container = document.getElementById('profile-container');
+    const quoteList = document.getElementById("quote-list");
+    const loginMsg = document.getElementById("login-message");
 
-    function createQuoteElement(text, comments = []) {
-      const div = document.createElement('div');
-      div.className = 'quote-card';
-      div.innerHTML = `<h4>"${text}"</h4>`;
-
-      if (comments.length > 0) {
-        const ul = document.createElement('ul');
-        comments.forEach(c => {
-          const li = document.createElement('li');
-          li.textContent = c;
-          ul.appendChild(li);
-        });
-        div.appendChild(ul);
+    async function ensureUserDoc(user) {
+      const userRef = doc(db, "users", user.uid);
+      try {
+        await setDoc(userRef, {
+          name: user.displayName || "Anonymous",
+          email: user.email || "",
+        }, { merge: true });
+      } catch (err) {
+        console.error("Error ensuring user doc:", err);
       }
-
-      return div;
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      container.innerHTML = '';
-
-      if (!user) {
-        container.innerHTML = `
-          <h2>You must be logged in to see your profile.</h2>
-          <a href="login.html" class="btn btn-primary">Login</a>
-        `;
+    function displayQuotes(quotes) {
+      quoteList.innerHTML = "";
+      if (quotes.length === 0) {
+        quoteList.innerHTML = "<p>You haven't submitted any quotes yet.</p>";
         return;
       }
 
-      const quotesRef = collection(db, "quotes");
-      const commentsRef = collection(db, "comments");
+      quotes.forEach((quote) => {
+        const box = document.createElement("div");
+        box.className = "quote-box";
+        box.innerHTML = `
+          <div class="quote-text">“${quote.quote}”</div>
+          <div class="quote-author">– ${quote.author || "Anonymous"}</div>
+        `;
+        quoteList.appendChild(box);
+      });
+    }
 
-      const q = query(quotesRef, where("uid", "==", user.uid));
-      const userQuotesSnapshot = await getDocs(q);
-
-      container.innerHTML = `<h2>Welcome, ${user.displayName || "User"}</h2>
-        <h3>Your Submitted Quotes</h3>`;
-
-      if (userQuotesSnapshot.empty) {
-        container.innerHTML += "<p>You haven't submitted any quotes yet.</p>";
-      } else {
-        for (const doc of userQuotesSnapshot.docs) {
-          const quoteData = doc.data();
-          const quoteId = doc.id;
-
-          // Fetch comments on this quote
-          const c = query(commentsRef, where("quoteId", "==", quoteId));
-          const commentsSnap = await getDocs(c);
-          const comments = commentsSnap.docs.map(d => d.data().text);
-
-          container.appendChild(createQuoteElement(quoteData.text, comments));
-        }
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        loginMsg.style.display = "block";
+        return;
       }
 
-      // Your comments
-      const myCommentsQ = query(commentsRef, where("uid", "==", user.uid));
-      const myCommentsSnap = await getDocs(myCommentsQ);
+      await ensureUserDoc(user);
 
-      const myComments = myCommentsSnap.docs.map(d => d.data().text);
-      if (myComments.length > 0) {
-        container.innerHTML += "<h3>Your Comments</h3>";
-        const ul = document.createElement('ul');
-        myComments.forEach(c => {
-          const li = document.createElement('li');
-          li.textContent = c;
-          ul.appendChild(li);
+      try {
+        const q = query(collection(db, "quotes"), where("author", "==", user.displayName));
+        const snapshot = await getDocs(q);
+        const userQuotes = [];
+        snapshot.forEach(doc => {
+          userQuotes.push(doc.data());
         });
-        container.appendChild(ul);
+        displayQuotes(userQuotes);
+      } catch (err) {
+        console.error("Error loading user's quotes:", err);
+        quoteList.innerHTML = "<p>Error loading quotes.</p>";
       }
     });
   </script>
