@@ -115,7 +115,7 @@
       if (user) {
         status.textContent = `Logged in as: ${user.displayName || user.email}`;
         // Optional: redirect after login
-        window.location.href = "index.html";
+        window.history.back();
       }
     });
   </script>
