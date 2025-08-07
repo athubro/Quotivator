@@ -1,143 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Profile - Quotivate</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubble&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Quotivate Profile</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap">
   <style>
     body {
-      font-family: "Patrick Hand", cursive;
-      background: #ffe0f0;
+      font-family: 'Patrick Hand', cursive;
+      background-color: #fff0f5;
       padding: 20px;
     }
-    h1 {
-      font-family: "Rubik Bubble", cursive;
-      color: hotpink;
-      text-align: center;
+    h2 {
+      color: #ff66b2;
     }
-    .quote-box {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin: 15px auto;
-      padding: 15px 20px;
-      max-width: 600px;
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(255, 105, 180, 0.2);
+      padding: 15px;
+      margin: 15px 0;
     }
-    .quote-text {
-      font-size: 1.2em;
-      color: #333;
+    .meta {
+      font-size: 14px;
+      color: #888;
     }
-    .quote-author {
-      font-weight: bold;
-      margin-top: 10px;
-      color: #555;
-    }
-    .login-redirect {
-      text-align: center;
-      margin-top: 50px;
-    }
-    .login-redirect a {
-      background: hotpink;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-size: 1.1em;
+    .section {
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <h1>Your Submitted Quotes</h1>
-  <div id="quote-list"></div>
 
-  <div class="login-redirect" id="login-message" style="display: none;">
-    <p>Please <a href="login.html">login</a> to view your profile.</p>
+  <h1>Welcome, <span id="username">User</span></h1>
+
+  <div class="section">
+    <h2>Your Submitted Quotes</h2>
+    <div id="user-quotes"></div>
+  </div>
+
+  <div class="section">
+    <h2>Comments You Submitted</h2>
+    <div id="user-comments"></div>
+  </div>
+
+  <div class="section">
+    <h2>Comments on Your Quotes</h2>
+    <div id="comments-on-quotes"></div>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-      getFirestore,
-      collection,
-      getDocs,
-      doc,
-      setDoc,
-      query,
-      where,
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+      getFirestore, collection, query, where, getDocs, doc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import {
-      getAuth,
-      onAuthStateChanged,
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+      getAuth, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDaxGdsgwL_T2ejOh74WK8TA2EJDdxswOw",
-      authDomain: "quoteapp-e57e7.firebaseapp.com",
-      projectId: "quoteapp-e57e7",
-      storageBucket: "quoteapp-e57e7.appspot.com",
-      messagingSenderId: "1065813414568",
-      appId: "1:1065813414568:web:10e8261f971f05c7cae89d",
-      measurementId: "G-XWP863T7K1",
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    const quoteList = document.getElementById("quote-list");
-    const loginMsg = document.getElementById("login-message");
-
-    async function ensureUserDoc(user) {
-      const userRef = doc(db, "users", user.uid);
-      try {
-        await setDoc(userRef, {
-          name: user.displayName || "Anonymous",
-          email: user.email || "",
-        }, { merge: true });
-      } catch (err) {
-        console.error("Error ensuring user doc:", err);
-      }
-    }
-
-    function displayQuotes(quotes) {
-      quoteList.innerHTML = "";
-      if (quotes.length === 0) {
-        quoteList.innerHTML = "<p>You haven't submitted any quotes yet.</p>";
-        return;
-      }
-
-      quotes.forEach((quote) => {
-        const box = document.createElement("div");
-        box.className = "quote-box";
-        box.innerHTML = `
-          <div class="quote-text">“${quote.quote}”</div>
-          <div class="quote-author">– ${quote.author || "Anonymous"}</div>
-        `;
-        quoteList.appendChild(box);
-      });
+    function formatDate(seconds) {
+      const date = new Date(seconds * 1000);
+      return date.toLocaleString();
     }
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        loginMsg.style.display = "block";
+        window.location.href = "login.html";
         return;
       }
 
-      await ensureUserDoc(user);
+      document.getElementById("username").textContent = user.displayName || user.email;
 
-      try {
-        const q = query(collection(db, "quotes"), where("author", "==", user.displayName));
-        const snapshot = await getDocs(q);
-        const userQuotes = [];
-        snapshot.forEach(doc => {
-          userQuotes.push(doc.data());
-        });
-        displayQuotes(userQuotes);
-      } catch (err) {
-        console.error("Error loading user's quotes:", err);
-        quoteList.innerHTML = "<p>Error loading quotes.</p>";
-      }
+      const quotesSnap = await getDocs(collection(db, "quotes"));
+      const commentsSnap = await getDocs(collection(db, "comments"));
+
+      const userQuotes = [];
+      const commentsYouSubmitted = [];
+      const commentsOnYourQuotes = [];
+
+      quotesSnap.forEach(docSnap => {
+        const data = docSnap.data();
+        const quoteId = docSnap.id;
+        if (data.author === user.displayName || data.author === user.email) {
+          userQuotes.push({ id: quoteId, ...data });
+
+          // Find comments on this quote
+          commentsSnap.forEach(commentSnap => {
+            const c = commentSnap.data();
+            if (c.quoteId === quoteId && c.author !== data.author) {
+              commentsOnYourQuotes.push({ ...c });
+            }
+          });
+        }
+      });
+
+      commentsSnap.forEach(commentSnap => {
+        const c = commentSnap.data();
+        if (c.author === user.displayName || c.author === user.email) {
+          commentsYouSubmitted.push(c);
+        }
+      });
+
+      const quotesContainer = document.getElementById("user-quotes");
+      userQuotes.forEach(q => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <p><strong>"${q.text}"</strong></p>
+          <p class="meta">Author: ${q.author}</p>
+          <p class="meta">Upvotes: ${q.upvotes || 0}</p>
+          <p class="meta">Posted: ${formatDate(q.timestamp?.seconds || 0)}</p>
+        `;
+        quotesContainer.appendChild(el);
+      });
+
+      const yourComments = document.getElementById("user-comments");
+      commentsYouSubmitted.forEach(c => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <p>${c.text}</p>
+          <p class="meta">Commented on quote ID: ${c.quoteId}</p>
+          <p class="meta">At: ${formatDate(c.timestamp?.seconds || 0)}</p>
+        `;
+        yourComments.appendChild(el);
+      });
+
+      const othersComments = document.getElementById("comments-on-quotes");
+      commentsOnYourQuotes.forEach(c => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <p>${c.text}</p>
+          <p class="meta">By: ${c.author}</p>
+          <p class="meta">On your quote ID: ${c.quoteId}</p>
+          <p class="meta">At: ${formatDate(c.timestamp?.seconds || 0)}</p>
+        `;
+        othersComments.appendChild(el);
+      });
     });
   </script>
 </body>
