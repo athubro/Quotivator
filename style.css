@@ -521,5 +521,49 @@ body {
   border-color: #ff4d94;
   box-shadow: 0 0 6px rgba(255, 77, 148, 0.3);
 }
+/* General button styling for Quotivate */
+.quote-box button {
+  background-color: #ff66b2; /* bright pink */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin: 5px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect */
+.quote-box button:hover {
+  background-color: #ff3385; /* slightly darker pink */
+  transform: scale(1.05);
+}
+
+/* Active (click) effect */
+.quote-box button:active {
+  transform: scale(0.95);
+}
+
+/* If you want a separate style for 'Upvote' buttons */
+.quote-box .upvote-btn {
+  background-color: #ff85c1;
+}
+
+.quote-box .upvote-btn:hover {
+  background-color: #ff4da6;
+}
+
+/* If you want a separate style for 'Comment' buttons */
+.quote-box .comment-btn {
+  background-color: #ff99cc;
+}
+
+.quote-box .comment-btn:hover {
+  background-color: #ff66b2;
+}
+
 
 
