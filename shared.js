@@ -52,7 +52,7 @@ function createSortSwitcher() {
   switcher.addEventListener("change", () => {
     sortMode = switcher.value;
     onAuthStateChanged(auth, (user) => {
-      if (user) loadQuotes(user);
+      loadQuotes(user);
     });
   });
   return switcher;
@@ -130,9 +130,13 @@ async function loadQuotes(user) {
           <div class="comments-list">
             ${commentsHTML}
           </div>
-          ${user ? `
-            <input type="text" class="comment-input" placeholder="Add a comment..." />
-          ` : `<div class="login-comment-msg">Login to comment</div>`}
+          ${
+            user
+              ? `<input type="text" class="comment-input" placeholder="Add a comment..." />`
+              : `<div class="login-comment-msg">
+                   <a href="login.html">Login</a> to comment
+                 </div>`
+          }
         </div>
       `;
 
@@ -177,42 +181,40 @@ async function loadQuotes(user) {
       });
     });
 
-    // Handle comments input
-    document.querySelectorAll(".comment-input").forEach((inputEl) => {
-      inputEl.addEventListener("keydown", async (e) => {
-        if (e.key === "Enter") {
-          const quoteId = inputEl.closest(".comment-section").id.replace("comments-", "");
-          const commentText = inputEl.value.trim();
-          if (!commentText) return;
+    // Handle comments input — only if user is logged in
+    if (user) {
+      document.querySelectorAll(".comment-input").forEach((inputEl) => {
+        inputEl.addEventListener("keydown", async (e) => {
+          if (e.key === "Enter") {
+            const quoteId = inputEl.closest(".comment-section").id.replace("comments-", "");
+            const commentText = inputEl.value.trim();
+            if (!commentText) return;
 
-          try {
-            const ref = doc(db, "quotes", quoteId);
-            await updateDoc(ref, {
-              comments: arrayUnion({
-                text: commentText,
-                user: user.displayName || "Anonymous",
-                timestamp: Date.now(),
-              }),
-            });
+            try {
+              const ref = doc(db, "quotes", quoteId);
+              await updateDoc(ref, {
+                comments: arrayUnion({
+                  text: commentText,
+                  user: user.displayName || "Anonymous",
+                  timestamp: Date.now(),
+                }),
+              });
 
-            inputEl.value = "";
-            loadQuotes(user); // Refresh quotes to show new comment
-          } catch (err) {
-            console.error("Failed to add comment:", err);
+              inputEl.value = "";
+              loadQuotes(user); // Refresh quotes to show new comment
+            } catch (err) {
+              console.error("Failed to add comment:", err);
+            }
           }
-        }
+        });
       });
-    });
+    }
   } catch (error) {
     console.error("Error loading quotes:", error);
   }
 }
 
-// 🔐 Protect page
+// ✅ Allow viewing for everyone, commenting only if logged in
 onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
-  } else {
-    loadQuotes(user);
-  }
+  loadQuotes(user);
 });
